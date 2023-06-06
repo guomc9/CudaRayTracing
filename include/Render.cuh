@@ -146,7 +146,34 @@ __global__ void video_render_kernel(unsigned int width, unsigned int height, Eig
             Ray ray(eye_pos, dir);
             temp_color += cast_ray(ray, 0, light_sample_n, P_RR, &rand_state, device_bvh, lights, &bounce_stacks[pixel_index], &bvh_stacks[pixel_index]) / spp;
         }
+        // OpenCV BGR
         device_frame_buffer[pixel_index] = make_uchar3(255 * std::pow(clamp(0, 1, temp_color.z()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.y()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.x()), 0.6f));
+    }
+}
+
+__global__ void rotation_render_kernel(unsigned int width, unsigned int height, Eigen::Vector3f eye_pos, Eigen::Matrix4f view, float fovY, unsigned int spp, float P_RR, int light_sample_n, DeviceBVH* device_bvh, uchar3* device_frame_buffer, DeviceLights* lights, DeviceStack<HitPayload, BOUNCE_STACK_SIZE>* bounce_stacks, DeviceStack<int, BVH_STACK_SIZE>* bvh_stacks)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    if (i < width && j < height)
+    {
+        int pixel_index = j * width + i;
+        Eigen::Vector3f temp_color = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+        float scale = tanf(fovY / 2);
+        float ar = static_cast<float>(width) / height;
+        curandState rand_state;
+        curand_init(clock() + pixel_index, 0, 0, &rand_state);
+        for(unsigned int k = 0; k < spp ; k++)
+        {
+            float x = (2 * (i + get_cuda_random_float(&rand_state)) / width - 1) * scale * ar;
+            float y = (1 - 2 * (j + get_cuda_random_float(&rand_state)) / height) * scale;
+            Eigen::Vector4f tmp_dir(-x, y, 1, 1);
+            tmp_dir = view * tmp_dir;
+            Eigen::Vector3f dir = Eigen::Vector3f(tmp_dir.x() / tmp_dir.w(), tmp_dir.y() / tmp_dir.w(), tmp_dir.z() / tmp_dir.w()).normalized();
+            Ray ray(eye_pos, dir);
+            temp_color += cast_ray(ray, 0, light_sample_n, P_RR, &rand_state, device_bvh, lights, &bounce_stacks[pixel_index], &bvh_stacks[pixel_index]) / spp;
+        }
+        device_frame_buffer[pixel_index] = make_uchar3(255 * std::pow(clamp(0, 1, temp_color.x()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.y()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.z()), 0.6f));
     }
 }
 
@@ -225,11 +252,18 @@ class Render
 
         void run_video(Eigen::Vector3f eye_pos, float fovY, Eigen::Matrix4f view)
         {
-            Eigen::Vector4f view_pos(eye_pos.x(), eye_pos.y(), eye_pos.z(), 1.0f);
-            view_pos = view * view_pos;
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
-            video_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), Eigen::Vector3f(view_pos.x(), view_pos.y(), view_pos.z()), view, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
+            video_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
+            cudaDeviceSynchronize();
+            cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
+        }
+
+        void run_rotation_data(Eigen::Vector3f eye_pos, float fovY, Eigen::Matrix4f view)
+        {
+            dim3 threadsPerBlock(16, 16);
+            dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
+            rotation_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
             cudaDeviceSynchronize();
             cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
         }

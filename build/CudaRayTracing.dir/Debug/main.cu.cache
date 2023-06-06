@@ -4,8 +4,8 @@ AdditionalCompilerOptions=
 AdditionalDependencies=
 AdditionalDeps=
 AdditionalLibraryDirectories=
-AdditionalOptions= -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"
-AdditionalOptions= -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"
+AdditionalOptions= -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"
+AdditionalOptions= -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"
 CodeGeneration=
 CodeGeneration=
 CompileOut=CudaRayTracing.dir\Debug\main.obj

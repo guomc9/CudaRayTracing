@@ -46,6 +46,7 @@ struct Task {
     float rot_speed;
     std::string video_save_path;
     std::string image_save_dir;
+    std::string transform_save_path;
     unsigned int fps;
 };
 std::vector<Task> tasks;
@@ -96,6 +97,7 @@ bool config_tasks()
             task.rot_speed = task_json["rot_speed"];
             task.rot_angle = task_json["rot_angle"];
             task.image_save_dir = task_json["image_save_dir"];
+            task.transform_save_path = task_json["transform_save_path"];
         }
         tasks.push_back(task);
     }
@@ -263,7 +265,7 @@ struct Transform
 };
 
 
-void write_transform(Transform t)
+void write_transform(Transform t, const std::string& save_path)
 {
     json data;
     data["camera_angle_x"] = t.fovX;
@@ -281,6 +283,16 @@ void write_transform(Transform t)
         frames_data.push_back(frame_data);
     }
     data["frames"] = frames_data;
+    std::ofstream json_file(save_path.c_str());
+    if (json_file.is_open())
+    {
+        json_file << data.dump(4);
+        json_file.close();
+    }
+    else
+    {
+        std::cout << "Unable to open " << save_path.c_str() << std::endl;
+    }
 }
 
 void render_rotation_data(Task task)
@@ -326,18 +338,23 @@ void render_rotation_data(Task task)
     while(cur_rot_angle < task.rot_angle)
     {
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
-        render.run_video(task.eye_pos, fovY, view);
+        Eigen::Vector4f view_pos(task.eye_pos.x(), task.eye_pos.y(), task.eye_pos.z(), 1.0f);
+        view_pos = view * view_pos;
+        render.run_rotation_data(view_pos.head<3>(), fovY, view);
         cur_rot_angle += task.rot_speed;
         show_progress_bar(cur_rot_angle, task.rot_angle);
         std::string dir = task.image_save_dir;
         Frame frame;
         frame.file_path = dir.append(std::to_string(cnt).append(".png"));
+        view(0, 3) += view_pos.x();
+        view(1, 3) += view_pos.y();
+        view(2, 3) += view_pos.z();
         frame.transform = view;
+        render.save_frame_buffer(frame.file_path.c_str());
         t.frames.push_back(frame);
-        render.save_frame_buffer(t.frames[cnt].file_path.c_str());
         cnt++;
     }
-    write_transform(t);
+    write_transform(t, task.transform_save_path);
     render.free();
     scene.free();
 }
