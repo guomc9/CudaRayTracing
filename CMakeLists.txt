@@ -15,8 +15,8 @@ find_package(OpenCV REQUIRED)
 # Include OpenCV
 include_directories(${OpenCV_INCLUDE_DIRS})
 # Link OpenCV
-find_library(OpenCV_world_LIB opencv_world455d HINTS ${OpenCV_LIB_DIR})
-find_library(OpenCV_videoio_LIB opencv_videoio455d HINTS ${OpenCV_LIB_DIR})
+find_library(OpenCV_world_LIB opencv_world*d HINTS ${OpenCV_LIB_DIR})
+find_library(OpenCV_videoio_LIB opencv_videoio*d HINTS ${OpenCV_LIB_DIR})
 target_link_libraries(CudaRayTracing ${OpenCV_world_LIB} ${OpenCV_videoio_LIB})
 
 # Find and link against the CUDA package
