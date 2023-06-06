@@ -24,7 +24,7 @@ find_package(CUDA REQUIRED)
 # Include CUDA
 include_directories(${CUDA_INCLUDE_DIRS})
 # Link against the curand library
-set_target_properties(CudaRayTracing PROPERTIES CUDA_ARCHITECTURES "89;86;80;75;70;61;60")
+set_target_properties(CudaRayTracing PROPERTIES CUDA_ARCHITECTURES "89;86;75;70;61;60")
 target_link_libraries(CudaRayTracing ${CUDA_LIBRARIES})
 
 if(WIN32)

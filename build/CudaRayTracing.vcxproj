@@ -104,7 +104,7 @@
     <CudaCompile>
       <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;CMAKE_INTDIR="Debug"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
@@ -161,7 +161,7 @@
     <CudaCompile>
       <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob2"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob2"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
@@ -217,7 +217,7 @@
     <CudaCompile>
       <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob1"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob1"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
@@ -273,7 +273,7 @@
     <CudaCompile>
       <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob1"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob1"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
