@@ -1,0 +1,35 @@
+{
+    "tasks": [
+        {
+            "task_id": 1, 
+            "task_type": "V",
+            "OBJ_paths": [
+                {
+                    "OBJ_path": "../../models/Scene-04/scene.obj",
+                    "MTL_dir": "../../models/Scene-04/"
+                }
+            ],
+            "eye_pos": {
+                "x": 0.0, 
+                "y": 60.0, 
+                "z": -380.0
+            },
+            "fovY": 45.0,
+            "width": 1024,
+            "height": 512,
+            "bvh_thresh_n": 4,
+            "P_RR": 0.9,
+            "spp": 32,
+            "light_sample_n": 32,
+            "rot_axis": {
+                "x": 0.0, 
+                "y": 1.0, 
+                "z": 0.0
+            },
+            "rot_angle": 360,
+            "rot_speed": 1,
+            "fps":10,
+            "video_save_path": "../../models/Scene-04/render/scene.avi"
+        }
+    ]
+}

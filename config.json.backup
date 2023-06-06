@@ -1,0 +1,58 @@
+{
+    "tasks": [
+        {
+            "task_id": 1,
+            "task_type": "I",
+            "OBJ_paths": [
+                {
+                    "OBJ_path": "../../models/Scene-01/scene.obj",
+                    "MTL_dir": "../../models/Scene-01/"
+                }
+            ],
+            "eye_pos": {
+                "x": 0.0, 
+                "y": 60.0, 
+                "z":-330.0
+            },
+            "fovY": 45.0,
+            "width": 1024,
+            "height": 512,
+            "bvh_thresh_n": 8,
+            "P_RR": 0.99,
+            "spp": 64,
+            "light_sample_n": 32,
+            "image_save_path": "../../models/Scene-01/scene.png"
+        },
+        {
+            "task_id": 2, 
+            "task_type": "V",
+            "OBJ_paths": [
+                {
+                    "OBJ_path": "../../models/Scene-03/scene.obj",
+                    "MTL_dir": "../../models/Scene-03/"
+                }
+            ],
+            "eye_pos": {
+                "x": 0.0, 
+                "y": 60.0, 
+                "z":-330.0
+            },
+            "fovY": 45.0,
+            "width": 1024,
+            "height": 512,
+            "bvh_thresh_n": 8,
+            "P_RR": 0.99,
+            "spp": 64,
+            "light_sample_n": 32,
+            "rot_axis": {
+                "x": 0.0, 
+                "y": 1.0, 
+                "z": 0.0
+            },
+            "rot_angle": 30,
+            "rot_speed": 1,
+            "fps":10,
+            "video_save_path": "../../models/Scene-03/render/scene.avi"
+        }
+    ]
+}

@@ -1,0 +1,194 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "MinSizeRel/CudaRayTracing.exe"
+		},
+		{
+			"path" : "MinSizeRel/CudaRayTracing.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_options",
+			"target_link_libraries",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 11,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 28,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 16,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 25,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-D_WINDOWS -Xcompiler=\"/W3 /GR /EHsc\" -Xcompiler=\"-MD -O1 -Ob1\" -DNDEBUG -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60]"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "D:/Programs/LearnCUDA/CudaRayTracing/./include"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "D:/OpenCV/4.5.5/opencv/build/install/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/include"
+				}
+			],
+			"language" : "CUDA",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					4294967295
+				],
+				"standard" : "14"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "CudaRayTracing::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-D_WINDOWS -Xcompiler=\"/W3 /GR /EHsc\" -Xcompiler=\"-MD -O1 -Ob1\" -DNDEBUG --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60]",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/NODEFAULTLIB:\"MSVCRT.lib\" /INCREMENTAL:NO",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "/NODEFAULTLIB:LIBCMT",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\OpenCV\\4.5.5\\opencv\\build\\install\\x64\\vc17\\lib\\opencv_world455d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\OpenCV\\4.5.5\\opencv\\build\\install\\x64\\vc17\\lib\\opencv_videoio455d.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.1\\lib\\x64\\cudart_static.lib\"",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "cudadevrt.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "cudart_static.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CUDA"
+	},
+	"name" : "CudaRayTracing",
+	"nameOnDisk" : "CudaRayTracing.exe",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/main.cu",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

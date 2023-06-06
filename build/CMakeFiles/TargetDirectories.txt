@@ -1,0 +1,9 @@
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/Experimental.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/Nightly.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/Continuous.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/NightlyMemoryCheck.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/CudaRayTracing.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/PACKAGE.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/RUN_TESTS.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/ALL_BUILD.dir
+D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/ZERO_CHECK.dir

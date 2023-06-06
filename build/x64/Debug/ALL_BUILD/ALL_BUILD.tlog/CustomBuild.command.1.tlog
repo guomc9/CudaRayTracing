@@ -1,0 +1,10 @@
+^D:\PROGRAMS\LEARNCUDA\CUDARAYTRACING\CMAKELISTS.TXT
+setlocal
+D:\CMake\bin\cmake.exe -SD:/Programs/LearnCUDA/CudaRayTracing -BD:/Programs/LearnCUDA/CudaRayTracing/build --check-stamp-file D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

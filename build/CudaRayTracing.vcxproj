@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BC981A27-C74F-3F0F-98D8-0D7B53436D76}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>CudaRayTracing</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.1.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaRayTracing.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CudaRayTracing</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaRayTracing.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CudaRayTracing</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CudaRayTracing.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CudaRayTracing</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CudaRayTracing.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CudaRayTracing</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;CMAKE_INTDIR="Debug"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob0"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>Od</Optimization>
+      <Runtime>MDd</Runtime>
+      <RuntimeChecks>RTC1</RuntimeChecks>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_world455d.lib;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_videoio455d.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\lib\x64\cudart_static.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programs/LearnCUDA/CudaRayTracing/build/Debug/CudaRayTracing.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programs/LearnCUDA/CudaRayTracing/build/Debug/CudaRayTracing.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob2"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_world455d.lib;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_videoio455d.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\lib\x64\cudart_static.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programs/LearnCUDA/CudaRayTracing/build/Release/CudaRayTracing.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programs/LearnCUDA/CudaRayTracing/build/Release/CudaRayTracing.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Ob1"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O1</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_world455d.lib;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_videoio455d.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\lib\x64\cudart_static.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programs/LearnCUDA/CudaRayTracing/build/MinSizeRel/CudaRayTracing.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programs/LearnCUDA/CudaRayTracing/build/MinSizeRel/CudaRayTracing.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <CudaCompile>
+      <Include>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(Include)</Include>
+      <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</Defines>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++14 --generate-code=arch=compute_89,code=[compute_89,sm_89] --generate-code=arch=compute_86,code=[compute_86,sm_86] --generate-code=arch=compute_80,code=[compute_80,sm_80] --generate-code=arch=compute_75,code=[compute_75,sm_75] --generate-code=arch=compute_70,code=[compute_70,sm_70] --generate-code=arch=compute_61,code=[compute_61,sm_61] --generate-code=arch=compute_60,code=[compute_60,sm_60] -Xcompiler="/EHsc -Zi -Ob1"</AdditionalOptions>
+      <CodeGeneration></CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>Static</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <Optimization>O2</Optimization>
+      <Runtime>MD</Runtime>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <TypeInfo>true</TypeInfo>
+      <UseHostInclude>false</UseHostInclude>
+      <Warning>W3</Warning>
+    </CudaCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programs\LearnCUDA\CudaRayTracing\.\include;D:\OpenCV\4.5.5\opencv\build\install\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_world455d.lib;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\opencv_videoio455d.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\lib\x64\cudart_static.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programs/LearnCUDA/CudaRayTracing/build/RelWithDebInfo/CudaRayTracing.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programs/LearnCUDA/CudaRayTracing/build/RelWithDebInfo/CudaRayTracing.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programs\LearnCUDA\CudaRayTracing\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programs/LearnCUDA/CudaRayTracing/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\CMake\bin\cmake.exe -SD:/Programs/LearnCUDA/CudaRayTracing -BD:/Programs/LearnCUDA/CudaRayTracing/build --check-stamp-file D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\CMake\share\cmake-3.26\Modules\CMakeCUDAInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCXXInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCommonLanguageInclude.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeGenericSystem.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeInitializeConfigs.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeLanguageInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeRCInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInitialize.cmake;D:\CMake\share\cmake-3.26\Modules\CPack.cmake;D:\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;D:\CMake\share\cmake-3.26\Modules\CTest.cmake;D:\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;D:\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;D:\CMake\share\cmake-3.26\Modules\FindCUDA.cmake;D:\CMake\share\cmake-3.26\Modules\FindCUDA\select_compute_arch.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\WindowsPaths.cmake;D:\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig-version.cmake;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules-debug.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCUDACompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCXXCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeRCCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programs/LearnCUDA/CudaRayTracing/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\CMake\bin\cmake.exe -SD:/Programs/LearnCUDA/CudaRayTracing -BD:/Programs/LearnCUDA/CudaRayTracing/build --check-stamp-file D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\CMake\share\cmake-3.26\Modules\CMakeCUDAInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCXXInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCommonLanguageInclude.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeGenericSystem.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeInitializeConfigs.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeLanguageInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeRCInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInitialize.cmake;D:\CMake\share\cmake-3.26\Modules\CPack.cmake;D:\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;D:\CMake\share\cmake-3.26\Modules\CTest.cmake;D:\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;D:\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;D:\CMake\share\cmake-3.26\Modules\FindCUDA.cmake;D:\CMake\share\cmake-3.26\Modules\FindCUDA\select_compute_arch.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\WindowsPaths.cmake;D:\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig-version.cmake;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules-debug.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCUDACompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCXXCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeRCCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programs/LearnCUDA/CudaRayTracing/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\CMake\bin\cmake.exe -SD:/Programs/LearnCUDA/CudaRayTracing -BD:/Programs/LearnCUDA/CudaRayTracing/build --check-stamp-file D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\CMake\share\cmake-3.26\Modules\CMakeCUDAInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCXXInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCommonLanguageInclude.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeGenericSystem.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeInitializeConfigs.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeLanguageInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeRCInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInitialize.cmake;D:\CMake\share\cmake-3.26\Modules\CPack.cmake;D:\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;D:\CMake\share\cmake-3.26\Modules\CTest.cmake;D:\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;D:\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;D:\CMake\share\cmake-3.26\Modules\FindCUDA.cmake;D:\CMake\share\cmake-3.26\Modules\FindCUDA\select_compute_arch.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\WindowsPaths.cmake;D:\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig-version.cmake;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules-debug.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCUDACompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCXXCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeRCCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programs/LearnCUDA/CudaRayTracing/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\CMake\bin\cmake.exe -SD:/Programs/LearnCUDA/CudaRayTracing -BD:/Programs/LearnCUDA/CudaRayTracing/build --check-stamp-file D:/Programs/LearnCUDA/CudaRayTracing/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\CMake\share\cmake-3.26\Modules\CMakeCUDAInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCXXInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeCommonLanguageInclude.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeGenericSystem.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeInitializeConfigs.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeLanguageInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeRCInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInformation.cmake;D:\CMake\share\cmake-3.26\Modules\CMakeSystemSpecificInitialize.cmake;D:\CMake\share\cmake-3.26\Modules\CPack.cmake;D:\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;D:\CMake\share\cmake-3.26\Modules\CTest.cmake;D:\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;D:\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Compiler\NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;D:\CMake\share\cmake-3.26\Modules\FindCUDA.cmake;D:\CMake\share\cmake-3.26\Modules\FindCUDA\select_compute_arch.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;D:\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC-CXX.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-MSVC.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows-NVIDIA-CUDA.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\Windows.cmake;D:\CMake\share\cmake-3.26\Modules\Platform\WindowsPaths.cmake;D:\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig-version.cmake;D:\OpenCV\4.5.5\opencv\build\install\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVConfig.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules-debug.cmake;D:\OpenCV\4.5.5\opencv\build\install\x64\vc17\lib\OpenCVModules.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCUDACompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeCXXCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeRCCompiler.cmake;D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\3.26.3\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programs\LearnCUDA\CudaRayTracing\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\src\main.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Programs\LearnCUDA\CudaRayTracing\build\ZERO_CHECK.vcxproj">
+      <Project>{714C5F1A-08B4-3BE6-BCEE-E316C18579D1}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.1.targets" />
+  </ImportGroup>
+</Project>
