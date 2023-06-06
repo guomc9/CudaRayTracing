@@ -14,81 +14,18 @@
 #include <json.hpp>
 #include <opencv2/opencv.hpp>
 
-// const unsigned int width = 784;
-// const unsigned int height = 784;
-// unsigned int width = 1024;
-// unsigned int height = 512;
-// unsigned int spp = 128;
-// float P_RR = 0.99f;
-// unsigned int light_sample_n = 32;
+
 // ======================================================================================
 // A binary tree contains nodes with degree = 0 or 2, satisfies:
 // 2 * y = x + y + 1,  ( x, y denote the number of nodes with degree = 0, degree = 2 )
 // then, y = x + 1.
-// Meanwhile, x = ceil(triangles_n / thresh_n), 
-// thus, nodes_n = x + y = 2 * x + 1.
-// Consequently, nodes_n = 2 * ceil(triangles_n / thresh_n) + 1.
-// If we set the nodes_n, it can be worked out that:
-// thresh_n = triangles_n / [(nodes_n - 1) / 2 - 1]
+// Meanwhile, x = ceil(triangles_n / bvh_thresh_n), 
+// thus, bvh_nodes_n = x + y = 2 * x + 1.
+// Consequently, bvh_nodes_n = 2 * ceil(triangles_n / bvh_thresh_n) + 1.
+// If we set the bvh_nodes_n, it can be worked out that:
+// bvh_thresh_n = triangles_n / [(bvh_nodes_n - 1) / 2 - 1]
 // ======================================================================================
 
-// const unsigned int bvh_thresh_n = 16;
-// // Eigen::Vector3f eye_pos = Eigen::Vector3f(278, 273, -1000);
-// Eigen::Vector3f eye_pos = Eigen::Vector3f(0, 50, -350);
-// float fovY = 45.0f;
-// Eigen::Vector3f rot_axis(0, 1, 0);
-// float rot_angle = 0.003f;
-// float rot_speed = 0.0001f;
-// Eigen::Vector3f move(278, 0, 1270);
-
-// std::vector<std::string> objs_path = {
-//     "../../models/CornellBox/floor.obj",
-//     "../../models/CornellBox/left.obj",
-//     "../../models/CornellBox/right.obj",
-//     "../../models/CornellBox/shortbox.obj",
-//     "../../models/CornellBox/tallbox.obj"
-// };
-// std::string mtl_dir = "../../models/CornellBox/";
-
-// std::vector<std::string> lights_path = {
-//     "../../models/CornellBox/light.obj"
-// };
-
-// std::string image_save_path = "../../models/CornellBox/scene.png";
-// std::string video_save_path = "../../models/CornellBox/Render/scene01.avi";
-
-// // Scene-01
-// std::vector<std::string> objs_path = {
-//     "../../models/Scene-01/scene.obj"
-// };
-
-// std::vector<std::string> lights_path = {
-// };
-
-// std::string mtl_dir = "../../models/Scene-01/";
-// std::string image_save_path = "../../models/Scene-01/scene.png";
-
-// // Scene-02
-// std::vector<std::string> objs_path = {
-//     "../../models/Scene-02/scene.obj"
-// };
-
-// std::vector<std::string> lights_path = {
-// };
-
-// std::string mtl_dir = "../../models/Scene-02/";
-// std::string image_save_path = "../../models/Scene-02/scene.png";
-
-// // Scene-03
-// std::vector<std::string> objs_path = {
-//     "../../models/Scene-03/scene.obj"
-// };
-
-// std::vector<std::string> lights_path = {
-// };
-
-// std::string mtl_dir = "../../models/Scene-03/";
-// std::string image_save_path = "../../models/Scene-03/scene.png";
 
 using json = nlohmann::json;
 struct Task {
@@ -108,6 +45,7 @@ struct Task {
     float rot_angle;
     float rot_speed;
     std::string video_save_path;
+    std::string image_save_dir;
     unsigned int fps;
 };
 std::vector<Task> tasks;
@@ -152,9 +90,12 @@ bool config_tasks()
         {
             task.image_save_path = task_json["image_save_path"];
         }
-        else
+        else if(task.task_type == "RD")
         {
-            return false;
+            task.rot_axis = Eigen::Vector3f(task_json["rot_axis"]["x"], task_json["rot_axis"]["y"], task_json["rot_axis"]["z"]);
+            task.rot_speed = task_json["rot_speed"];
+            task.rot_angle = task_json["rot_angle"];
+            task.image_save_dir = task_json["image_save_dir"];
         }
         tasks.push_back(task);
     }
@@ -228,8 +169,9 @@ void render_image(Task task)
 
     scene.set_BVH(task.bvh_thresh_n);
     printf("BVH built.\n");
+    float fovY = task.fovY * (float)M_PI / 180;
     Render render(&scene, task.spp, task.P_RR, task.light_sample_n);
-    render.run_image(task.eye_pos, task.fovY);
+    render.run_image(task.eye_pos, fovY);
     render.save_frame_buffer(task.image_save_path.c_str());
     render.free();
     scene.free();
@@ -292,10 +234,11 @@ void render_video(Task task)
     writer.open(task.video_save_path, cv::VideoWriter::fourcc('M','J','P','G'), task.fps, cv::Size(task.width, task.height));
     
     float cur_rot_angle = 0.0f;
+    float fovY = task.fovY * (float)M_PI / 180;
     while(cur_rot_angle < task.rot_angle)
     {
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
-        render.run_video(task.eye_pos, task.fovY, view);
+        render.run_video(task.eye_pos, fovY, view);
         cv::Mat frame(task.height, task.width, CV_8UC3);
         memcpy(frame.data, render.get_frame_buffer(), sizeof(unsigned char) * 3 * task.width * task.height);
         writer.write(frame);
@@ -303,6 +246,98 @@ void render_video(Task task)
         show_progress_bar(cur_rot_angle, task.rot_angle);
     }
     writer.release();
+    render.free();
+    scene.free();
+}
+
+struct Frame
+{
+    Eigen::Matrix4f transform;
+    std::string file_path;
+};
+
+struct Transform
+{
+    float fovX;
+    std::vector<Frame> frames;
+};
+
+
+void write_transform(Transform t)
+{
+    json data;
+    data["camera_angle_x"] = t.fovX;
+    std::vector<json> frames_data;
+    for(const auto & frame : t.frames)
+    {
+        json frame_data;
+        frame_data["file_path"] = frame.file_path.c_str();
+        frame_data["transform_matrix"] = {
+            {frame.transform(0, 0), frame.transform(0, 1), frame.transform(0, 2), frame.transform(0, 3)},
+            {frame.transform(1, 0), frame.transform(1, 1), frame.transform(1, 2), frame.transform(1, 3)},
+            {frame.transform(2, 0), frame.transform(2, 1), frame.transform(2, 2), frame.transform(2, 3)},
+            {frame.transform(3, 0), frame.transform(3, 1), frame.transform(3, 2), frame.transform(3, 3)}
+        };
+        frames_data.push_back(frame_data);
+    }
+    data["frames"] = frames_data;
+}
+
+void render_rotation_data(Task task)
+{
+    OBJLoader loader;
+    Scene scene(task.width, task.height);
+
+    for(const auto& OBJ_path : task.OBJ_paths)
+    {
+        if(loader.read_OBJ(OBJ_path.first.c_str(), OBJ_path.second.c_str()))
+        {
+            std::cout << OBJ_path.first.c_str() << " loaded" << std::endl;
+        }
+        else
+        {
+            std::cout << OBJ_path.first.c_str() << " failed to load" << std::endl;
+        }
+        while(!loader.is_empty())
+        {
+            loader.load_object();
+            if(loader.get_triangles().size()>0)
+            {
+                Object object(loader.get_triangles());
+                scene.add_normal_obj(object);
+            }
+            if(loader.get_light_triangles().size()>0)
+            {
+                Object light(loader.get_light_triangles());
+                scene.add_light_obj(light);
+            }
+        }
+    }
+    
+    scene.set_BVH(task.bvh_thresh_n);
+    printf("BVH built.\n");
+    Render render(&scene, task.spp, task.P_RR, task.light_sample_n);
+
+    int cnt = 0;
+    float cur_rot_angle = 0.0f;
+    Transform t;
+    float fovY = task.fovY * (float)M_PI / 180;
+    t.fovX = 2 * atan(tan(fovY / 2) * task.width / task.height);
+    while(cur_rot_angle < task.rot_angle)
+    {
+        Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
+        render.run_video(task.eye_pos, fovY, view);
+        cur_rot_angle += task.rot_speed;
+        show_progress_bar(cur_rot_angle, task.rot_angle);
+        std::string dir = task.image_save_dir;
+        Frame frame;
+        frame.file_path = dir.append(std::to_string(cnt).append(".png"));
+        frame.transform = view;
+        t.frames.push_back(frame);
+        render.save_frame_buffer(t.frames[cnt].file_path.c_str());
+        cnt++;
+    }
+    write_transform(t);
     render.free();
     scene.free();
 }
@@ -328,33 +363,14 @@ int main(void)
         {
             render_video(task);
         }
+        else if(task.task_type == "RD")
+        {
+            render_rotation_data(task);
+        }
+        else
+        {
+            return -1;
+        }
     }
-    // // create video writer
-    // cv::VideoWriter writer;
-
-    // writer.open(video_save_path, cv::VideoWriter::fourcc('M','J','P','G'), 10, cv::Size(width, height));
-    
-    // // create Render
-    // Render render(&scene, spp, P_RR);
-    // float cur_rot_angle = 0.0f;
-    // Eigen::Matrix4f move_back = get_translation_matrix(-move);
-    // Eigen::Matrix4f move_forward = get_translation_matrix(move);
-    // // int cnt = 0;
-    // while(cur_rot_angle < rot_angle)
-    // {
-    //     Eigen::Matrix4f rot = get_rotation_matrix(rot_axis, cur_rot_angle);
-    //     Eigen::Matrix4f view = move_forward * rot * move_back;
-    //     render.run(eye_pos, fovY, view);
-    //     cur_rot_angle += rot_speed;
-    //     cv::Mat frame(height, width, CV_8UC3);
-    //     memcpy(frame.data, render.get_frame_buffer(), sizeof(unsigned char) * 3 * width * height);
-    //     writer.write(frame);
-    // }
-    // // free
-    // writer.release();
-
-    // ======================================================
-
-    // ========================================================
     return 0;
 }

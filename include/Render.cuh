@@ -132,7 +132,7 @@ __global__ void video_render_kernel(unsigned int width, unsigned int height, Eig
     {
         int pixel_index = j * width + i;
         Eigen::Vector3f temp_color = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
-        float scale = tanf(fovY * M_PI / 360);
+        float scale = tanf(fovY / 2);
         float ar = static_cast<float>(width) / height;
         curandState rand_state;
         curand_init(clock() + pixel_index, 0, 0, &rand_state);
@@ -158,7 +158,7 @@ __global__ void image_render_kernel(unsigned int width, unsigned int height, Eig
     {
         int pixel_index = j * width + i;
         Eigen::Vector3f temp_color = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
-        float scale = tanf(fovY * M_PI / 360);
+        float scale = tanf(fovY / 2);
         float ar = static_cast<float>(width) / height;
         curandState rand_state;
         curand_init(clock() + pixel_index, 0, 0, &rand_state);
