@@ -50,7 +50,11 @@ struct Task {
     unsigned int fps;
 };
 std::vector<Task> tasks;
-const char config_path[] = "../../config.json";
+#ifdef _MSC_VER
+std::string config_path("../../config.json");
+#else
+std::string config_path("../config.json");
+#endif
 
 bool config_tasks()
 {

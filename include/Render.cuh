@@ -99,8 +99,8 @@ __device__ Eigen::Vector3f cast_ray(Ray ray, int depth, int light_sample_n, floa
                         float t_to_light = dist.norm();
                         float t_to_light_p2 = t_to_light * t_to_light;
                         float inv_pdf = light_sample_payload.inv_pdf;
-                        float cos_theta = std::fabsf(dir.dot(normal));
-                        float cos_theta_2 =  std::fabsf(dir.dot(light_normal));
+                        float cos_theta = fabsf(dir.dot(normal));
+                        float cos_theta_2 =  fabsf(dir.dot(light_normal));
                         tmp_L_dir += L_i.cwiseProduct(f_r) * cos_theta * cos_theta_2 * inv_pdf / t_to_light_p2 / light_sample_n;
                     }
                 }
@@ -110,7 +110,7 @@ __device__ Eigen::Vector3f cast_ray(Ray ray, int depth, int light_sample_n, floa
             float inv_pdf = get_cuda_sphere_sample_inv_pdf();
             if(!is_final_hit)
             {
-                float cos_theta = std::fabsf((pre_hit.pos - pos).normalized().dot(normal));
+                float cos_theta = fabsf((pre_hit.pos - pos).normalized().dot(normal));
                 tmp_L_indir = L.cwiseProduct(f_r) * cos_theta * inv_pdf / P_RR;
             }
             else
