@@ -147,4 +147,110 @@ Besides, you can also make a images dataset for NeRF training with this program.
 }
 ```
 
-Please notice that the executable file is in the directory ` ./build/` for Unix-like environments, so you are supposed to fix the save paths or directories.
+Please notice that the executable file is in the directory ` ./build/` for Unix-like environments rather than `./build/Debug/` for Windows, **so you are supposed to fix the save path and directory in the examples above**.
+
+### Run 
+
+To run this program after build with  command `./CudaRayTracing` in the directory `./`,  if you run the default configuration in `config.json`, you will get the images and meta data as follows:
+
+<img src="./models/Scene-04/data/0.png" style="zoom:50%;" />
+
+<img src="./models/Scene-04/data/1.png" style="zoom:50%;" />
+
+<img src="./models/Scene-04/data/2.png" style="zoom:50%;" />
+
+```json
+{
+    "camera_angle_x": 1.3836716413497925,
+    "frames": [
+        {
+            "file_path": "../../models/Scene-04/data/0.png",
+            "transform_matrix": [
+                [
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0,
+                    60.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0,
+                    -380.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "file_path": "../../models/Scene-04/data/1.png",
+            "transform_matrix": [
+                [
+                    0.8660253882408142,
+                    0.0,
+                    0.5,
+                    -190.0
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0,
+                    60.0
+                ],
+                [
+                    -0.5,
+                    0.0,
+                    0.8660253882408142,
+                    -329.08966064453125
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "file_path": "../../models/Scene-04/data/2.png",
+            "transform_matrix": [
+                [
+                    0.4999999701976776,
+                    0.0,
+                    0.866025447845459,
+                    -329.08966064453125
+                ],
+                [
+                    0.0,
+                    1.0,
+                    0.0,
+                    60.0
+                ],
+                [
+                    -0.866025447845459,
+                    0.0,
+                    0.4999999701976776,
+                    -189.99998474121094
+                ],
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            ]
+        }
+    ]
+}
+```
+

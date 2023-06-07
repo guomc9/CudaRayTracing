@@ -26,8 +26,8 @@
                 "y": 1.0, 
                 "z": 0.0
             },
-            "rot_angle": 3,
-            "rot_speed": 1,
+            "rot_angle": 90,
+            "rot_speed": 30,
             "transform_save_path": "../../models/Scene-04/data/transform.json",
             "image_save_dir": "../../models/Scene-04/data/"
         }
