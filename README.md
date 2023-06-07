@@ -28,7 +28,7 @@ Follow these steps to build the project locally:
    git clone https://github.com/guomingce/CudaRayTracing.git
    ```
 
-2.  Build the program:
+2. Build the program:
 
    ```shell
    mkdir build
@@ -42,7 +42,7 @@ You can configure your rendering task with the `./config.json` file, in which yo
 
 You can see examples below. 
 
-For `task-1`, it is a image rendering task, you can set your `.obj` file path  and `.mtl` directory, as for the loader implemented with `tiny_obj_loader`, then `eye_pos`, `fovY` , `width`, `height` denote the camera position, vertical field of view, image width and height, and ray-tracing parameters including BVH nodes' triangles threshold, possibility Russian Roulette, sample per pixel,  and number of light samples. 
+For `task-1`, it is a image rendering task, you can set your `.obj` file path  and `.mtl` directory, as for the loader implemented with [tiny_obj_loader](https://github.com/tinyobjloader/tinyobjloader), then `eye_pos`, `fovY` , `width`, `height` denote the camera position, vertical field of view, image width and height, and ray-tracing parameters including BVH nodes' triangles threshold, possibility Russian Roulette, sample per pixel,  and number of light samples. 
 
 For `task-2`, it is a video rendering task, in addition to the relevant parameters before, you are required to provide the rotation axis, angles(degree), speed(degree per frame), frames per second.
 
@@ -107,7 +107,7 @@ For `task-2`, it is a video rendering task, in addition to the relevant paramete
  }
  ```
 
-Besides, you can also make a images dataset for NeRF training with this program. As the `task-3` below, after set the rotation parameters, transformation save path  and image save directory, you can run the program to get your data.
+Besides, you can also make a images dataset for NeRF training with this program. As the `task-3` below, after set the rotation parameters, transformation save path  and image save directory, you can run the program to get your data. It facilitates you to use [load_blender.py](https://github.com/yenchenlin/nerf-pytorch/blob/master/load_blender.py) in [nerf-pytorch](https://github.com/yenchenlin/nerf-pytorch) to read datas.
 
 ```json
 {
