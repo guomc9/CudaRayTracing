@@ -5,10 +5,13 @@
             "task_type": "RD",
             "OBJ_paths": [
                 {
-                    "OBJ_path": "../../models/Scene-04/scene.obj",
-                    "MTL_dir": "../../models/Scene-04/"
+                    "OBJ_path": "../../models/Scene-05/scene.obj",
+                    "MTL_dir": "../../models/Scene-05/"
                 }
             ],
+            "far": 680,
+            "near": 0,
+            "view_z_dir": 1,
             "eye_pos": {
                 "x": 0.0, 
                 "y": 60.0, 
@@ -28,8 +31,8 @@
             },
             "rot_angle": 90,
             "rot_speed": 30,
-            "transform_save_path": "../../models/Scene-04/data/transform.json",
-            "image_save_dir": "../../models/Scene-04/data/"
+            "transform_save_path": "../../models/Scene-05/data/transform.json",
+            "image_save_dir": "../../models/Scene-05/data/"
         }
     ]
 }

@@ -9,6 +9,7 @@
                     "MTL_dir": "../../models/Scene-01/"
                 }
             ],
+            "view_z_dir": 1,
             "eye_pos": {
                 "x": 0.0, 
                 "y": 60.0, 
@@ -32,6 +33,7 @@
                     "MTL_dir": "../../models/Scene-03/"
                 }
             ],
+            "view_z_dir": 1,
             "eye_pos": {
                 "x": 0.0, 
                 "y": 60.0, 

@@ -34,6 +34,9 @@ struct Task {
     std::vector<std::pair<std::string, std::string>> OBJ_paths;
     Eigen::Vector3f eye_pos;
     float fovY;
+    float far;
+    float near;
+    int view_z_dir;
     unsigned int width;
     unsigned int height;
     unsigned int bvh_thresh_n;
@@ -73,7 +76,7 @@ bool config_tasks()
         {
             task.OBJ_paths.push_back({path_json["OBJ_path"], path_json["MTL_dir"]});
         }
-
+        task.view_z_dir = (int)task_json["view_z_dir"] > 0? 1:-1;
         task.eye_pos = Eigen::Vector3f(task_json["eye_pos"]["x"], task_json["eye_pos"]["y"], task_json["eye_pos"]["z"]);
         task.fovY = task_json["fovY"];
         task.width = task_json["width"];
@@ -97,6 +100,8 @@ bool config_tasks()
         }
         else if(task.task_type == "RD")
         {
+            task.near = task_json["near"];
+            task.far = task_json["far"];
             task.rot_axis = Eigen::Vector3f(task_json["rot_axis"]["x"], task_json["rot_axis"]["y"], task_json["rot_axis"]["z"]);
             task.rot_speed = task_json["rot_speed"];
             task.rot_angle = task_json["rot_angle"];
@@ -177,7 +182,7 @@ void render_image(Task task)
     printf("BVH built.\n");
     float fovY = task.fovY * (float)M_PI / 180;
     Render render(&scene, task.spp, task.P_RR, task.light_sample_n);
-    render.run_image(task.eye_pos, fovY);
+    render.run_image(task.eye_pos, task.view_z_dir, fovY);
     render.save_frame_buffer(task.image_save_path.c_str());
     render.free();
     scene.free();
@@ -244,7 +249,7 @@ void render_video(Task task)
     while(cur_rot_angle < task.rot_angle)
     {
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
-        render.run_video(task.eye_pos, fovY, view);
+        render.run_video(task.eye_pos, task.view_z_dir, fovY, view);
         cv::Mat frame(task.height, task.width, CV_8UC3);
         memcpy(frame.data, render.get_frame_buffer(), sizeof(unsigned char) * 3 * task.width * task.height);
         writer.write(frame);
@@ -265,6 +270,9 @@ struct Frame
 struct Transform
 {
     float fovX;
+    float near;
+    float far;
+    int view_z_dir;
     std::vector<Frame> frames;
 };
 
@@ -273,6 +281,9 @@ void write_transform(Transform t, const std::string& save_path)
 {
     json data;
     data["camera_angle_x"] = t.fovX;
+    data["near"] = t.near;
+    data["far"] = t.far;
+    data["view_z_dir"] = t.view_z_dir;
     std::vector<json> frames_data;
     for(const auto & frame : t.frames)
     {
@@ -337,6 +348,9 @@ void render_rotation_data(Task task)
     int cnt = 0;
     float cur_rot_angle = 0.0f;
     Transform t;
+    t.far = task.far;
+    t.near = task.near;
+    t.view_z_dir = task.view_z_dir;
     float fovY = task.fovY * (float)M_PI / 180;
     t.fovX = 2 * atan(tan(fovY / 2) * task.width / task.height);
     while(cur_rot_angle < task.rot_angle)
@@ -344,7 +358,7 @@ void render_rotation_data(Task task)
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
         Eigen::Vector4f view_pos(task.eye_pos.x(), task.eye_pos.y(), task.eye_pos.z(), 1.0f);
         view_pos = view * view_pos;
-        render.run_rotation_data(view_pos.head<3>(), fovY, view);
+        render.run_rotation_data(view_pos.head<3>(), task.view_z_dir, fovY, view);
         cur_rot_angle += task.rot_speed;
         show_progress_bar(cur_rot_angle, task.rot_angle);
         std::string dir = task.image_save_dir;
