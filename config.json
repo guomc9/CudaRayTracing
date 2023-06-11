@@ -15,7 +15,7 @@
             "eye_pos": {
                 "x": 0.0, 
                 "y": 60.0, 
-                "z": -380.0
+                "z": -100.0
             },
             "fovY": 45.0,
             "width": 1024,
@@ -25,9 +25,9 @@
             "spp": 32,
             "light_sample_n": 32,
             "rot_axis": {
-                "x": 0.0, 
-                "y": 1.0, 
-                "z": 0.0
+                "axis": "y",
+                "coord_1": 0,
+                "coord_2": 300
             },
             "rot_angle": 90,
             "rot_speed": 30,

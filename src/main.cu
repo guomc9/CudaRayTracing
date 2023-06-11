@@ -45,6 +45,7 @@ struct Task {
     unsigned int spp;
     std::string image_save_path;
     Eigen::Vector3f rot_axis;
+    Eigen::Vector3f rot_axis_coords;
     float rot_angle;
     float rot_speed;
     std::string video_save_path;
@@ -88,7 +89,25 @@ bool config_tasks()
         
         if(task.task_type == "V")
         {
-            task.rot_axis = Eigen::Vector3f(task_json["rot_axis"]["x"], task_json["rot_axis"]["y"], task_json["rot_axis"]["z"]);
+            if(task_json["rot_axis"]["axis"] == "y")
+            {
+                task.rot_axis = Eigen::Vector3f(0.f, 1.f, 0.f);
+                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], 0.f, task_json["rot_axis"]["coord_2"]);
+            }
+            else if(task_json["rot_axis"]["axis"] == "x")
+            {
+                task.rot_axis = Eigen::Vector3f(1.f, 0.f, 0.f);
+                task.rot_axis_coords = Eigen::Vector3f(0.f, task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"]);
+            }
+            else if(task_json["rot_axis"]["axis"] == "z")
+            {
+                task.rot_axis = Eigen::Vector3f(0.f, 0.f, 1.f);
+                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"], 0.f);
+            }
+            else
+            {
+                return false;
+            }
             task.rot_speed = task_json["rot_speed"];
             task.rot_angle = task_json["rot_angle"];
             task.video_save_path = task_json["video_save_path"];
@@ -102,11 +121,33 @@ bool config_tasks()
         {
             task.near = task_json["near"];
             task.far = task_json["far"];
-            task.rot_axis = Eigen::Vector3f(task_json["rot_axis"]["x"], task_json["rot_axis"]["y"], task_json["rot_axis"]["z"]);
+            if(task_json["rot_axis"]["axis"] == "y")
+            {
+                task.rot_axis = Eigen::Vector3f(0.f, 1.f, 0.f);
+                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], 0.f, task_json["rot_axis"]["coord_2"]);
+            }
+            else if(task_json["rot_axis"]["axis"] == "x")
+            {
+                task.rot_axis = Eigen::Vector3f(1.f, 0.f, 0.f);
+                task.rot_axis_coords = Eigen::Vector3f(0.f, task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"]);
+            }
+            else if(task_json["rot_axis"]["axis"] == "z")
+            {
+                task.rot_axis = Eigen::Vector3f(0.f, 0.f, 1.f);
+                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"], 0.f);
+            }
+            else
+            {
+                return false;
+            }
             task.rot_speed = task_json["rot_speed"];
             task.rot_angle = task_json["rot_angle"];
             task.image_save_dir = task_json["image_save_dir"];
             task.transform_save_path = task_json["transform_save_path"];
+        }
+        else
+        {
+            return false;
         }
         tasks.push_back(task);
     }
@@ -246,10 +287,15 @@ void render_video(Task task)
     
     float cur_rot_angle = 0.0f;
     float fovY = task.fovY * (float)M_PI / 180;
+    Eigen::Matrix4f forward = get_translation_matrix(-task.rot_axis_coords);
+    Eigen::Matrix4f back = get_translation_matrix(task.rot_axis_coords);
+    std::cout << back << std::endl;
     while(cur_rot_angle < task.rot_angle)
     {
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
-        render.run_video(task.eye_pos, task.view_z_dir, fovY, view);
+        Eigen::Vector4f view_pos(task.eye_pos.x(), task.eye_pos.y(), task.eye_pos.z(), 1.0f);
+        view_pos = back * view * forward * view_pos;
+        render.run_video(view_pos.head<3>(), task.view_z_dir, fovY, view);
         cv::Mat frame(task.height, task.width, CV_8UC3);
         memcpy(frame.data, render.get_frame_buffer(), sizeof(unsigned char) * 3 * task.width * task.height);
         writer.write(frame);
@@ -353,20 +399,22 @@ void render_rotation_data(Task task)
     t.view_z_dir = task.view_z_dir;
     float fovY = task.fovY * (float)M_PI / 180;
     t.fovX = 2 * atan(tan(fovY / 2) * task.width / task.height);
+    Eigen::Matrix4f forward = get_translation_matrix(-task.rot_axis_coords);
+    Eigen::Matrix4f back = get_translation_matrix(task.rot_axis_coords);
     while(cur_rot_angle < task.rot_angle)
     {
         Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
         Eigen::Vector4f view_pos(task.eye_pos.x(), task.eye_pos.y(), task.eye_pos.z(), 1.0f);
-        view_pos = view * view_pos;
+        view_pos = back * view * forward * view_pos;
         render.run_rotation_data(view_pos.head<3>(), task.view_z_dir, fovY, view);
         cur_rot_angle += task.rot_speed;
         show_progress_bar(cur_rot_angle, task.rot_angle);
         std::string dir = task.image_save_dir;
         Frame frame;
         frame.file_path = dir.append(std::to_string(cnt).append(".png"));
-        view(0, 3) += view_pos.x();
-        view(1, 3) += view_pos.y();
-        view(2, 3) += view_pos.z();
+        view(0, 3) = view_pos.x();
+        view(1, 3) = view_pos.y();
+        view(2, 3) = view_pos.z();
         frame.transform = view;
         render.save_frame_buffer(frame.file_path.c_str());
         t.frames.push_back(frame);
