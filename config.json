@@ -1,38 +1,28 @@
 {
     "tasks": [
         {
-            "task_id": 1, 
-            "task_type": "RD",
+            "task_id": 1,
+            "task_type": "I",
             "OBJ_paths": [
                 {
-                    "OBJ_path": "../../models/Scene-05/scene.obj",
-                    "MTL_dir": "../../models/Scene-05/"
+                    "OBJ_path": "../../models/Scene-02/scene.obj",
+                    "MTL_dir": "../../models/Scene-02/"
                 }
             ],
-            "far": 680,
-            "near": 0,
             "view_z_dir": 1,
             "eye_pos": {
                 "x": 0.0, 
                 "y": 60.0, 
-                "z": -100.0
+                "z":-330.0
             },
             "fovY": 45.0,
             "width": 1024,
             "height": 512,
-            "bvh_thresh_n": 4,
-            "P_RR": 0.9,
-            "spp": 32,
+            "bvh_thresh_n": 8,
+            "P_RR": 0.99,
+            "spp": 64,
             "light_sample_n": 32,
-            "rot_axis": {
-                "axis": "y",
-                "coord_1": 0,
-                "coord_2": 300
-            },
-            "rot_angle": 90,
-            "rot_speed": 30,
-            "transform_save_path": "../../models/Scene-05/data/transform.json",
-            "image_save_dir": "../../models/Scene-05/data/"
+            "image_save_path": "../../models/Scene-02/scene.png"
         }
     ]
 }

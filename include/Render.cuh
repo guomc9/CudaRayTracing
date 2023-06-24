@@ -214,9 +214,8 @@ class Render
         DeviceBVH* host_bvh;
         DeviceLights* host_lights;
 
-        // to device parameters
+        // device parameters
         DeviceBVH* device_bvh;
-        size_t pitch;
         uchar3* device_frame_buffer;   // RGB
         DeviceLights* device_lights;
         DeviceStack<int, BVH_STACK_SIZE>* device_bvh_stacks;

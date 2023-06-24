@@ -31,11 +31,6 @@ class BVH
         {
             nodes.clear();
             root_index = build_node(0, (int)triangles.size());
-            // printf("Triangles size = %llu\n", triangles.size());
-            // for(int i=0;i<nodes.size();i++)
-            // {
-            //     printf("Triangle index begin = %d, end = %d\n", nodes[i].it, nodes[i].it+nodes[i].n);
-            // }
         };
 
     private:
