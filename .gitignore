@@ -1,2 +1,4 @@
 build/
 .vscode/
+config.json.backup
+config.json.back
