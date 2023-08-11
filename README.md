@@ -5,7 +5,7 @@ A simple ray-tracing program implemented with CUDA, which supports rendering ima
 
 
 
-<img src="models\CornellBox\scene-msaa.png" style="zoom:70%;" />
+<img src="models\CornellBox\result.png" style="zoom:70%;" />
 
 ## Getting Started
 
