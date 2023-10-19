@@ -8,6 +8,7 @@
 #include "Scene.h"
 #include "Ray.cuh"
 #include <cuda_runtime.h>
+#include <cuda_gl_interop.h>
 
 __device__ inline void sample_light(LightSamplePayload& payload, curandState* rand_state, DeviceLight* light)
 {
@@ -124,7 +125,7 @@ __device__ Eigen::Vector3f cast_ray(Ray ray, int depth, int light_sample_n, floa
     return L;
 }
 
-__global__ void video_render_kernel(unsigned int width, unsigned int height, Eigen::Vector3f eye_pos, int view_z_dir, Eigen::Matrix4f view, float fovY, unsigned int spp, float P_RR, int light_sample_n, DeviceBVH* device_bvh, uchar3* device_frame_buffer, DeviceLights* lights, DeviceStack<HitPayload, BOUNCE_STACK_SIZE>* bounce_stacks, DeviceStack<int, BVH_STACK_SIZE>* bvh_stacks)
+__global__ void view_render_kernel(unsigned int width, unsigned int height, Eigen::Vector3f eye_pos, int view_z_dir, float fovY, unsigned int spp, float P_RR, int light_sample_n, DeviceBVH* device_bvh, uchar3* device_frame_buffer, DeviceLights* lights, DeviceStack<HitPayload, BOUNCE_STACK_SIZE>* bounce_stacks, DeviceStack<int, BVH_STACK_SIZE>* bvh_stacks)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
@@ -140,14 +141,11 @@ __global__ void video_render_kernel(unsigned int width, unsigned int height, Eig
         {
             float x = (2 * (i + get_cuda_random_float(&rand_state)) / width - 1) * scale * ar;
             float y = (1 - 2 * (j + get_cuda_random_float(&rand_state)) / height) * scale;
-            Eigen::Vector4f tmp_dir(-view_z_dir * x, y, view_z_dir, 1);
-            tmp_dir = view * tmp_dir;
-            Eigen::Vector3f dir = Eigen::Vector3f(tmp_dir.x() / tmp_dir.w(), tmp_dir.y() / tmp_dir.w(), tmp_dir.z() / tmp_dir.w()).normalized();
+            Eigen::Vector3f dir = Eigen::Vector3f(-view_z_dir*x, y, view_z_dir).normalized();
             Ray ray(eye_pos, dir);
             temp_color += cast_ray(ray, 0, light_sample_n, P_RR, &rand_state, device_bvh, lights, &bounce_stacks[pixel_index], &bvh_stacks[pixel_index]) / spp;
         }
-        // OpenCV BGR
-        device_frame_buffer[pixel_index] = make_uchar3(255 * std::pow(clamp(0, 1, temp_color.z()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.y()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.x()), 0.6f));
+        device_frame_buffer[pixel_index] = make_uchar3(255 * std::pow(clamp(0, 1, temp_color.x()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.y()), 0.6f), 255 * std::pow(clamp(0, 1, temp_color.z()), 0.6f));
     }
 }
 
@@ -249,13 +247,39 @@ class Render
             cudaMalloc((void**)&device_bounce_stacks, sizeof(DeviceStack<HitPayload, BOUNCE_STACK_SIZE>) * scene->get_pixels());
         }
 
-        void run_video(Eigen::Vector3f eye_pos, int view_z_dir, float fovY, Eigen::Matrix4f view)
+        void run_view(Eigen::Vector3f eye_pos, int view_z_dir, float fovY, cudaGraphicsResource* cuda_pbo_resource)
         {
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
-            video_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, view, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
+            view_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
             cudaDeviceSynchronize();
-            cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
+            
+            // cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
+
+            // write device_frame_buffer to pbo
+            cudaError_t err = cudaGraphicsMapResources(1, &cuda_pbo_resource, 0);
+            if (err != cudaSuccess)
+            {
+                printf("CUDA error: %s\n", cudaGetErrorString(err));
+            }
+            size_t num_bytes = sizeof(uchar3) * scene->get_pixels(); 
+            uchar3* cuda_pbo_pointer;
+            err = cudaGraphicsResourceGetMappedPointer((void **)&cuda_pbo_pointer, &num_bytes, cuda_pbo_resource);
+            if (err != cudaSuccess)
+            {
+                printf("CUDA error: %s\n", cudaGetErrorString(err));
+            }
+            err = cudaMemcpy((void *)cuda_pbo_pointer, (void *)device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToDevice);
+            if (err != cudaSuccess)
+            {
+                printf("CUDA error: %s\n", cudaGetErrorString(err));
+            }
+            err = cudaGraphicsUnmapResources(1, &cuda_pbo_resource, 0);
+            if (err != cudaSuccess)
+            {
+                printf("CUDA error: %s\n", cudaGetErrorString(err));
+            }
+            
         }
 
         void run_rotation_data(Eigen::Vector3f eye_pos, int view_z_dir, float fovY, Eigen::Matrix4f view)

@@ -2,7 +2,7 @@
     "tasks": [
         {
             "task_id": 1,
-            "task_type": "I",
+            "task_type": "V",
             "OBJ_paths": [
                 {
                     "OBJ_path": "../../models/CornellBox/floor.obj",
@@ -31,17 +31,17 @@
             ],
             "view_z_dir": 1,
             "eye_pos": {
-                "x": 300.0, 
-                "y": 300.0, 
-                "z":-750.0
+                "x": 275.0, 
+                "y": 280.0, 
+                "z":-730.0
             },
             "fovY": 45.0,
-            "width": 726,
-            "height": 812,
+            "width": 512,
+            "height": 512,
             "bvh_thresh_n": 8,
-            "P_RR": 0.99,
-            "spp": 32,
-            "light_sample_n": 32,
+            "P_RR": 0.6,
+            "spp": 8,
+            "light_sample_n": 4, 
             "image_save_path": "../../models/CornellBox/result.png"
         }
     ]

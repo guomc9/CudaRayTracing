@@ -3,6 +3,7 @@
 #include "Loader.h"
 #include "Object.h"
 #include "Scene.h"
+#include <glad/glad.h>
 #include "Render.cuh"
 #include "Eigen/Dense"
 #include "Eigen/Core"
@@ -10,10 +11,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <GLFW/glfw3.h>
 #include <chrono>
 #include <json.hpp>
-#include <opencv2/opencv.hpp>
-
+#include <cuda_gl_interop.h>
 
 // ======================================================================================
 // A binary tree contains nodes with degree = 0 or 2, satisfies:
@@ -77,7 +78,7 @@ bool config_tasks()
         {
             task.OBJ_paths.push_back({path_json["OBJ_path"], path_json["MTL_dir"]});
         }
-        task.view_z_dir = (int)task_json["view_z_dir"] > 0? 1:-1;
+        task.view_z_dir = (int)task_json["view_z_dir"] > 0? 1 : -1;
         task.eye_pos = Eigen::Vector3f(task_json["eye_pos"]["x"], task_json["eye_pos"]["y"], task_json["eye_pos"]["z"]);
         task.fovY = task_json["fovY"];
         task.width = task_json["width"];
@@ -87,33 +88,7 @@ bool config_tasks()
         task.spp = task_json["spp"];
         task.light_sample_n = task_json["light_sample_n"];
         
-        if(task.task_type == "V")
-        {
-            if(task_json["rot_axis"]["axis"] == "y")
-            {
-                task.rot_axis = Eigen::Vector3f(0.f, 1.f, 0.f);
-                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], 0.f, task_json["rot_axis"]["coord_2"]);
-            }
-            else if(task_json["rot_axis"]["axis"] == "x")
-            {
-                task.rot_axis = Eigen::Vector3f(1.f, 0.f, 0.f);
-                task.rot_axis_coords = Eigen::Vector3f(0.f, task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"]);
-            }
-            else if(task_json["rot_axis"]["axis"] == "z")
-            {
-                task.rot_axis = Eigen::Vector3f(0.f, 0.f, 1.f);
-                task.rot_axis_coords = Eigen::Vector3f(task_json["rot_axis"]["coord_1"], task_json["rot_axis"]["coord_2"], 0.f);
-            }
-            else
-            {
-                return false;
-            }
-            task.rot_speed = task_json["rot_speed"];
-            task.rot_angle = task_json["rot_angle"];
-            task.video_save_path = task_json["video_save_path"];
-            task.fps = task_json["fps"];
-        }
-        else if(task.task_type == "I")
+        if(task.task_type == "I")
         {
             task.image_save_path = task_json["image_save_path"];
         }
@@ -144,6 +119,10 @@ bool config_tasks()
             task.rot_angle = task_json["rot_angle"];
             task.image_save_dir = task_json["image_save_dir"];
             task.transform_save_path = task_json["transform_save_path"];
+        }
+        else if(task.task_type == "V")
+        {
+            task.image_save_path = task_json["image_save_path"];
         }
         else
         {
@@ -244,67 +223,6 @@ void show_progress_bar(float progress, float total, int bar_width = 50)
     }
     std::cout << "] " << progress << " / " << total << " \r";
     std::cout.flush();
-}
-
-void render_video(Task task)
-{
-    OBJLoader loader;
-    Scene scene(task.width, task.height);
-
-    for(const auto& OBJ_path : task.OBJ_paths)
-    {
-        if(loader.read_OBJ(OBJ_path.first.c_str(), OBJ_path.second.c_str()))
-        {
-            std::cout << OBJ_path.first.c_str() << " loaded" << std::endl;
-        }
-        else
-        {
-            std::cout << OBJ_path.first.c_str() << " failed to load" << std::endl;
-        }
-        while(!loader.is_empty())
-        {
-            loader.load_object();
-            if(loader.get_triangles().size()>0)
-            {
-                Object object(loader.get_triangles());
-                scene.add_normal_obj(object);
-            }
-            if(loader.get_light_triangles().size()>0)
-            {
-                Object light(loader.get_light_triangles());
-                scene.add_light_obj(light);
-            }
-        }
-    }
-
-    scene.set_BVH(task.bvh_thresh_n);
-    printf("BVH built.\n");
-    Render render(&scene, task.spp, task.P_RR, task.light_sample_n);
-
-    cv::VideoWriter writer;
-
-    writer.open(task.video_save_path, cv::VideoWriter::fourcc('M','J','P','G'), task.fps, cv::Size(task.width, task.height));
-    
-    float cur_rot_angle = 0.0f;
-    float fovY = task.fovY * (float)M_PI / 180;
-    Eigen::Matrix4f forward = get_translation_matrix(-task.rot_axis_coords);
-    Eigen::Matrix4f back = get_translation_matrix(task.rot_axis_coords);
-    std::cout << back << std::endl;
-    while(cur_rot_angle < task.rot_angle)
-    {
-        Eigen::Matrix4f view = get_rotation_matrix(task.rot_axis, cur_rot_angle);
-        Eigen::Vector4f view_pos(task.eye_pos.x(), task.eye_pos.y(), task.eye_pos.z(), 1.0f);
-        view_pos = back * view * forward * view_pos;
-        render.run_video(view_pos.head<3>(), task.view_z_dir, fovY, view);
-        cv::Mat frame(task.height, task.width, CV_8UC3);
-        memcpy(frame.data, render.get_frame_buffer(), sizeof(unsigned char) * 3 * task.width * task.height);
-        writer.write(frame);
-        cur_rot_angle += task.rot_speed;
-        show_progress_bar(cur_rot_angle, task.rot_angle);
-    }
-    writer.release();
-    render.free();
-    scene.free();
 }
 
 struct Frame
@@ -425,6 +343,213 @@ void render_rotation_data(Task task)
     scene.free();
 }
 
+
+void render_view(Task task)
+{
+    OBJLoader loader;
+    Scene scene(task.width, task.height);
+
+    for(const auto& OBJ_path : task.OBJ_paths)
+    {
+        if(loader.read_OBJ(OBJ_path.first.c_str(), OBJ_path.second.c_str()))
+        {
+            std::cout << OBJ_path.first.c_str() << " loaded" << std::endl;
+        }
+        else
+        {
+            std::cout << OBJ_path.first.c_str() << " failed to load" << std::endl;
+        }
+        while(!loader.is_empty())
+        {
+            loader.load_object();
+            if(loader.get_triangles().size()>0)
+            {
+                Object object(loader.get_triangles());
+                scene.add_normal_obj(object);
+            }
+            if(loader.get_light_triangles().size()>0)
+            {
+                Object light(loader.get_light_triangles());
+                scene.add_light_obj(light);
+            }
+        }
+    }
+
+    // configure opengl
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Triangle", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return ;
+    }
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return ;
+    }
+
+    glViewport(0, 0, 800, 600);
+
+    GLuint pbo;
+    glGenBuffers(1, &pbo);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, task.width * task.height * 3, 0, GL_STREAM_DRAW);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    // 设置纹理参数
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // 分配纹理内存
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, task.width, task.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    float vertices[] = {
+        // positions        // texture coords
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom left
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top right
+
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom left
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top right
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f  // top left
+    };
+
+    GLuint VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    const char *vertexShaderSource = R"glsl(
+        #version 330 core
+        layout (location = 0) in vec3 aPos;
+        layout (location = 1) in vec2 aTexCoord;
+
+        out vec2 TexCoord;
+
+        void main()
+        {
+            gl_Position = vec4(aPos, 1.0);
+            TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
+        })glsl";
+
+    const char *fragmentShaderSource = R"glsl(
+        #version 330 core
+        out vec4 FragColor;
+
+        in vec2 TexCoord;
+
+        uniform sampler2D texture1;
+
+        void main()
+        {
+            FragColor = texture(texture1, TexCoord);
+        })glsl";
+
+    GLint vs_id = glCreateShader(GL_VERTEX_SHADER);
+    GLint fs_id = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(vs_id, 1, &vertexShaderSource, nullptr);
+    glShaderSource(fs_id, 1, &fragmentShaderSource, nullptr);
+    
+    GLint prog_id = glCreateProgram();
+    
+    glCompileShader(vs_id);
+    glCompileShader(fs_id);
+    
+    glAttachShader(prog_id, vs_id);
+    glAttachShader(prog_id, fs_id);
+    
+    glLinkProgram(prog_id);
+    glValidateProgram(prog_id);
+
+    glDeleteShader(vs_id);
+    glDeleteShader(fs_id);
+
+    glUseProgram(prog_id);
+
+    cudaGraphicsResource* cuda_pbo_resource;
+    cudaGraphicsGLRegisterBuffer(&cuda_pbo_resource, pbo, cudaGraphicsMapFlagsWriteDiscard);
+
+    scene.set_BVH(task.bvh_thresh_n);
+    printf("BVH built.\n");
+    float fovY = task.fovY * (float)M_PI / 180;
+    Render render(&scene, task.spp, task.P_RR, task.light_sample_n);
+    glUseProgram(prog_id);
+    auto begin = std::chrono::high_resolution_clock::now();
+    while(!glfwWindowShouldClose(window))
+    {   
+        render.run_view(task.eye_pos, task.view_z_dir, fovY, cuda_pbo_resource);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - begin;
+        printf("fps: %lf frames / s\n", 1. / elapsed.count());
+        begin = end;
+        
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, task.width, task.height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+        
+        // Bind the PBO and texture
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+
+        // Upload the texture data
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, task.width, task.height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+        // Unbind the PBO and texture
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glBindVertexArray(VAO);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    
+    render.free();
+    scene.free();
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    cudaGraphicsUnregisterResource(cuda_pbo_resource);
+    glDeleteBuffers(1, &pbo);
+    glDeleteTextures(1, &textureID);
+
+    glfwTerminate();
+}
+
+
 int main(void)
 {
     if(!config_CUDA())
@@ -442,13 +567,13 @@ int main(void)
         {
             render_image(task);
         }
-        else if(task.task_type == "V")
-        {
-            render_video(task);
-        }
         else if(task.task_type == "RD")
         {
             render_rotation_data(task);
+        }
+        else if(task.task_type == "V")
+        {
+            render_view(task);
         }
         else
         {
