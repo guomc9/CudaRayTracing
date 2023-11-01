@@ -2,47 +2,27 @@
     "tasks": [
         {
             "task_id": 1,
-            "task_type": "V",
+            "task_type": "I",
             "OBJ_paths": [
                 {
-                    "OBJ_path": "../../models/CornellBox/floor.obj",
-                    "MTL_dir": "../../models/CornellBox/"
-                },
-                {
-                    "OBJ_path": "../../models/CornellBox/left.obj",
-                    "MTL_dir": "../../models/CornellBox/"
-                },
-                {
-                    "OBJ_path": "../../models/CornellBox/right.obj",
-                    "MTL_dir": "../../models/CornellBox/"
-                },
-                {
-                    "OBJ_path": "../../models/CornellBox/light.obj",
-                    "MTL_dir": "../../models/CornellBox/"
-                },
-                {
-                    "OBJ_path": "../../models/CornellBox/shortbox.obj",
-                    "MTL_dir": "../../models/CornellBox/"
-                },
-                {
-                    "OBJ_path": "../../models/CornellBox/tallbox.obj",
-                    "MTL_dir": "../../models/CornellBox/"
+                    "OBJ_path": "../../models/WallPaper/wallpaper.obj",
+                    "MTL_dir": "../../models/WallPaper/"
                 }
             ],
-            "view_z_dir": 1,
+            "view_z_dir": -1,
             "eye_pos": {
-                "x": 275.0, 
-                "y": 280.0, 
-                "z":-730.0
+                "x": 5.0, 
+                "y": 4.0, 
+                "z": 19.0
             },
             "fovY": 45.0,
-            "width": 512,
-            "height": 512,
+            "width": 2160,
+            "height": 1080,
             "bvh_thresh_n": 8,
-            "P_RR": 0.6,
-            "spp": 8,
-            "light_sample_n": 4, 
-            "image_save_path": "../../models/CornellBox/result.png"
+            "P_RR": 0.95,
+            "spp": 64,
+            "light_sample_n": 128, 
+            "image_save_path": "../../models/WallPaper/result.png"
         }
     ]
 }

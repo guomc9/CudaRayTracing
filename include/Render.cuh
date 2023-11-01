@@ -252,7 +252,7 @@ class Render
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
             view_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
-            cudaDeviceSynchronize();
+            // cudaDeviceSynchronize();
             
             // cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
 
@@ -287,7 +287,7 @@ class Render
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
             rotation_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, view, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
-            cudaDeviceSynchronize();
+            // cudaDeviceSynchronize();
             cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
         }
 
@@ -296,7 +296,7 @@ class Render
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
             image_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
-            cudaDeviceSynchronize();
+            // cudaDeviceSynchronize();
             cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
         }
 
