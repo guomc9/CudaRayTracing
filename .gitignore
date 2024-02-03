@@ -2,3 +2,5 @@ build/
 .vscode/
 config.json.backup
 config.json.back
+glad.zip
+glfw-3.3.9.bin.WIN64.zip

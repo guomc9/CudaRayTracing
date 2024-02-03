@@ -252,9 +252,7 @@ class Render
             dim3 threadsPerBlock(16, 16);
             dim3 numBlocks((scene->get_width() + threadsPerBlock.x - 1) / threadsPerBlock.x, (scene->get_height() + threadsPerBlock.y - 1) / threadsPerBlock.y);
             view_render_kernel<<<numBlocks, threadsPerBlock>>>(scene->get_width(), scene->get_height(), eye_pos, view_z_dir, fovY, spp, P_RR, light_sample_n, device_bvh, device_frame_buffer, device_lights, device_bounce_stacks, device_bvh_stacks);
-            // cudaDeviceSynchronize();
-            
-            // cudaMemcpy(frame_buffer, device_frame_buffer, sizeof(uchar3) * scene->get_pixels(), cudaMemcpyDeviceToHost);
+            cudaDeviceSynchronize();
 
             // write device_frame_buffer to pbo
             cudaError_t err = cudaGraphicsMapResources(1, &cuda_pbo_resource, 0);
@@ -316,6 +314,21 @@ class Render
         unsigned char* get_frame_buffer() const
         {
             return frame_buffer;
+        }
+
+        void set_spp(const int& spp)
+        {
+            this->spp = spp;
+        }
+
+        void set_P_RR(const float& P_RR)
+        {
+            this->P_RR = P_RR;
+        }
+
+        void set_light_sample_n(const int& light_sample_n)
+        {
+            this->light_sample_n = light_sample_n;
         }
 };
 

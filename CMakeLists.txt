@@ -1,26 +1,40 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(CudaRayTracing CUDA CXX C)
-
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
 include(CTest)
 enable_testing()
 find_package ( OpenGL REQUIRED )
-
-include_directories("./include")
+include_directories(
+    "./include"
+    "ext/imgui"
+    "ext/imgui/backends"
+)
 set ( CPACK_PROJECT_NAME ${PROJECT_NAME} )
 set ( CPACK_PROJECT_VERSION ${PROJECT_VERSION} )
-set ( GLFW_HOME "d:/ENV/GLFW" )
-set ( GLAD_HOME "d:/ENV/GLAD" )
-
+set ( GLFW_HOME "ext/glfw-3.3.9.bin.WIN64" )
+link_directories( "${GLFW_HOME}/lib-vc2022" )
+set ( GLAD_HOME "ext/glad" )
+set ( IMGUI_HOME "ext/imgui" )
 set ( GLFW_INC "${GLFW_HOME}/include" )
-set ( GLFW_LIB "${GLFW_HOME}/lib-vc2022/glfw3.lib" )
+set ( GLFW_LIB "glfw3" )
 
 set ( GLAD_INC "${GLAD_HOME}/include" )
 set ( GLAD_SRC "${GLAD_HOME}/src" )
 
-file ( GLOB glad_src_file "${GLAD_SRC}/glad.c" )
+file ( GLOB glad_src_files "${GLAD_SRC}/glad.c" )
 file ( GLOB glad_header_files "${GLAD_INC}/glad/glad.h" "${GLAD_INC}/KHR/khrplatform.h" )
 
-add_executable(CudaRayTracing src/main.cu ${glad_header_files} ${glad_src_file})
+file ( GLOB imgui_src_files "${IMGUI_HOME}/imgui.cpp" 
+                            "${IMGUI_HOME}/imgui_draw.cpp"
+                            "${IMGUI_HOME}/imgui_tables.cpp"
+                            "${IMGUI_HOME}/imgui_widgets.cpp"
+                            "${IMGUI_HOME}/backends/imgui_impl_glfw.cpp"
+                            "${IMGUI_HOME}/backends/imgui_impl_opengl3.cpp"
+                            )
+
+add_executable(CudaRayTracing src/main.cu ${glad_header_files} ${glad_src_files} ${imgui_src_files})
 
 # Include CUDA
 include_directories(${CUDA_INCLUDE_DIRS})
