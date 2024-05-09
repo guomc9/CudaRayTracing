@@ -1,6 +1,13 @@
 build/
 .vscode/
-config.json.backup
-config.json.back
-glad.zip
-glfw-3.3.9.bin.WIN64.zip
+scenes/CornellBox
+scenes/Scene-01
+scenes/Scene-02
+scenes/Scene-03
+scenes/Scene-04
+scenes/Scene-05
+scenes/Scene-06
+scenes/Scene-07
+scenes/bathroom
+scenes/WallPaper
+scenes/check.py

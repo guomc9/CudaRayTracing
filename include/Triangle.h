@@ -14,16 +14,18 @@ class Triangle
         Eigen::Vector3f normal;
         Material material;
         float area;
+        float area_of_obj;
         float max_x, min_x;
         float max_y, min_y;
         float max_z, min_z;
 
     public:
-        Triangle(Eigen::Vector3f _v1, Eigen::Vector3f _v2, Eigen::Vector3f _v3, Material _m)
+        Triangle(Eigen::Vector3f _v1, Eigen::Vector3f _v2, Eigen::Vector3f _v3, Eigen::Vector3f _normal, Material _m)
         :v1(_v1), v2(_v2), v3(_v3), material(_m)
         {
             center = (v1 + v2 + v3) / 3;
             normal = (v2 - v1).cross(v3 - v1).normalized();
+            // normal = _normal;
 
             max_x = std::max(std::max(v1.x(), v2.x()), v3.x());
             min_x = std::min(std::min(v1.x(), v2.x()), v3.x());
@@ -35,6 +37,7 @@ class Triangle
             min_z = std::min(std::min(v1.z(), v2.z()), v3.z());
 
             area = (v2 - v1).cross(v3 - v1).norm() * 0.5f;
+            area_of_obj = 0.0f;
         }
 
         static bool cmp_x(Triangle &t1, Triangle &t2)
@@ -80,6 +83,16 @@ class Triangle
         inline float get_area() const
         {
             return area;
+        }
+
+        inline float get_area_of_obj() const
+        {
+            return area_of_obj;
+        }
+
+        inline void set_area_of_obj(const float _area_of_obj)
+        {
+            area_of_obj = _area_of_obj;
         }
 
         inline float get_max_x() const

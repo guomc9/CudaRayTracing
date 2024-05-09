@@ -1,0 +1,31 @@
+{
+    "OBJ_paths": [
+        {
+            "OBJ_path": "../../scenes/veach-mis/veach-mis.obj",
+            "MTL_dir": "../../scenes/veach-mis/"
+        }
+    ],
+
+	"lookat": {
+        "x": 0.0, 
+        "y": 2.8, 
+        "z": 0.0
+    }, 
+	"up": {
+        "x":0.0, 
+        "y":1.0, 
+        "z":0.0
+    }, 
+    "eye_pos": {
+        "x": 28.2792, 
+        "y": 5.2, 
+        "z": 1.23612e-06
+    },
+    "fov_y": 30.1143, 
+    "width": 800, 
+    "height": 600, 
+    "bvh_thresh_n": 2, 
+    "P_RR": 0.6, 
+    "spp": 4, 
+    "light_sample_n": 1
+}

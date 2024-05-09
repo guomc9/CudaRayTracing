@@ -10,13 +10,13 @@
 
 class DeviceTriangle
 {
-    // private:
-    public:
+    private:
         Eigen::Vector3f v1, v2, v3;
         Eigen::Vector3f e1, e2;
         Eigen::Vector3f normal;
         DeviceMaterial device_material;
         float area;
+        float area_of_obj;
 
     public:
         DeviceTriangle(const Triangle t)
@@ -29,19 +29,17 @@ class DeviceTriangle
             device_material = DeviceMaterial(t.get_material());
             normal = t.get_normal();
             area = t.get_area();
+            area_of_obj = t.get_area_of_obj();
         }
 
         DeviceTriangle(const DeviceTriangle& other)
-        : v1(other.v1), v2(other.v2), v3(other.v3), e1(other.e1), e2(other.e2), normal(other.normal), device_material(other.device_material), area(other.area)
+        : v1(other.v1), v2(other.v2), v3(other.v3), e1(other.e1), e2(other.e2), normal(other.normal), device_material(other.device_material), area(other.area), area_of_obj(other.area_of_obj)
         {}
 
         __device__ HitPayload get_intersection(Eigen::Vector3f origin, Eigen::Vector3f dir) const
         {
             // Möller Trumbore Algorithm
-            // printf("v1=(%f, %f, %f)\n", v1.x(), v1.y(), v1.z());
-            // printf("here3-1\n");
             Eigen::Vector3f s = origin - v1;
-            // printf("here3-2\n");
             Eigen::Vector3f s1 = dir.cross(e2);
             Eigen::Vector3f s2 = s.cross(e1);
             float reciprocal = 1 / s1.dot(e1);
@@ -50,19 +48,16 @@ class DeviceTriangle
             float t = s2.dot(e2) * reciprocal;
             float alpha = 1 - beta - gamma;
             Eigen::Vector3f pos = origin + t * dir;
-            // printf("here4\n");
             if(inside(alpha, beta, gamma))
             {
-                // printf("here5\n");
-                return HitPayload(true, pos, normal, t, device_material);
+                return HitPayload(origin, dir, true, pos, normal, t, area_of_obj, device_material);
             }
-            // printf("here6\n");
             return HitPayload();
         }
 
-        __device__ bool inside(float alpha, float beta, float gamma) const
+        __device__ bool inside(const float alpha, const float beta, const float gamma) const
         {
-            if(0 < alpha && alpha < 1 && 0 < beta && beta < 1 && 0 < gamma && gamma < 1)
+            if (0 < alpha && alpha < 1 && 0 < beta && beta < 1 && 0 < gamma && gamma < 1)
             {
                 return true;
             }
@@ -71,12 +66,11 @@ class DeviceTriangle
 
         __device__ LightSamplePayload sample(curandState* rand_state) const
         {
-            // printf("here7\n");
             float alpha = get_cuda_random_float(rand_state);
             float beta = get_cuda_random_float(rand_state) * (1 - alpha);
             float gamma = 1 - alpha - beta;
             Eigen::Vector3f pos = alpha * v1 + beta * v2 + gamma * v3;
-            return LightSamplePayload(pos, normal, device_material.get_ke(), area);
+            return LightSamplePayload(pos, normal, device_material.get_ke(), area_of_obj, area_of_obj, area);
         }
 
         __device__ Eigen::Vector3f get_emission() const

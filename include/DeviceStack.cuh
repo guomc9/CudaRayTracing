@@ -1,11 +1,11 @@
 #ifndef _DEVICE_STACK_CUH_
 #define _DEVICE_STACK_CUH_
 
-template <typename T, int size>
+template <typename T, int cap>
 class DeviceStack
 {
     private:
-        T stack[size];
+        T stack[cap];
         int top;
 
     public:
@@ -21,7 +21,7 @@ class DeviceStack
 
         __device__ void push(T value)
         {
-            if (top < size - 1)
+            if (top < cap - 1)
             {
                 top++;
                 stack[top] = value;
@@ -46,12 +46,17 @@ class DeviceStack
 
         __device__ bool is_full() const
         {
-            return top >= size - 1;
+            return top >= cap - 1;
         }
 
         __device__ bool is_empty() const
         {
             return top == -1;
+        }
+
+        __device__ uint64_t size() const
+        {
+            return top + 1;
         }
 };
 

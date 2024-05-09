@@ -1,0 +1,64 @@
+newmtl material0
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1
+newmtl material1
+Kd 0.1 0.2 0.3
+Ks 0.1 0.2 0.3
+Tr 1 1 1
+Ns 5000
+Ni 1
+newmtl material2
+Kd 0.1 0.2 0.3
+Ks 0.1 0.2 0.3
+Tr 1 1 1
+Ns 1000
+Ni 1
+newmtl material3
+Kd 0.1 0.2 0.3
+Ks 0.1 0.2 0.3
+Tr 1 1 1
+Ns 500
+Ni 1
+newmtl material4
+Kd 0.1 0.2 0.3
+Ks 0.1 0.2 0.3
+Tr 1 1 1
+Ns 100
+Ni 1
+newmtl Texture
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1
+newmtl light1
+Ke 300 300 300
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1
+newmtl light2
+Ke 50 50 50
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1
+newmtl light3
+Ke 20 20 20
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1
+newmtl light4
+Ke 10 10 10
+Kd 0.5 0.5 0.5
+Ks 0 0 0
+Tr 1 1 1
+Ns 1
+Ni 1

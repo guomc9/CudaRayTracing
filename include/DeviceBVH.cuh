@@ -34,7 +34,7 @@ struct DeviceBVHNode
         for(int i = it; i < static_cast<int>(it + n); i++)
         {
             HitPayload tmp = ts[i].get_intersection(origin, dir);
-            if(tmp.t > EPSILON_100 && tmp.t < payload.t)
+            if(tmp.t > EPSILON && tmp.t < payload.t)
             {
                 payload = tmp;
             }
@@ -52,21 +52,31 @@ struct DeviceBVH
     DeviceBVH(BVH& bvh)
     {
         unsigned int host_root_index = bvh.get_root_index();
-        cudaMalloc((void**)&root_index, sizeof(unsigned int));
-        cudaMemcpy(root_index, &host_root_index, sizeof(unsigned int), cudaMemcpyHostToDevice);
+        cudaError_t err;
+        err = cudaMalloc((void**)&root_index, sizeof(unsigned int));
+        err = cudaMemcpy(root_index, &host_root_index, sizeof(unsigned int), cudaMemcpyHostToDevice);
+        if (err != cudaSuccess)
+        {
+            printf("CUDA error: %s\n", cudaGetErrorString(err));
+            throw std::runtime_error("DeviceBVH.root_index to cuda.");
+        }
 
         std::vector<DeviceBVHNode> host_nodes(bvh.get_nodes().begin(), bvh.get_nodes().end());
-        cudaMalloc((void**)&nodes, sizeof(DeviceBVHNode) * bvh.get_nodes_size());
-        cudaMemcpy(nodes, host_nodes.data(), sizeof(DeviceBVHNode) * host_nodes.size(), cudaMemcpyHostToDevice);
-
+        err = cudaMalloc((void**)&nodes, sizeof(DeviceBVHNode) * bvh.get_nodes_size());
+        err = cudaMemcpy(nodes, host_nodes.data(), sizeof(DeviceBVHNode) * host_nodes.size(), cudaMemcpyHostToDevice);
+        if (err != cudaSuccess)
+        {
+            printf("CUDA error: %s\n", cudaGetErrorString(err));
+            throw std::runtime_error("DeviceBVH.nodes to cuda.");
+        }
         std::vector<DeviceTriangle> host_triangles(bvh.get_triangles().begin(), bvh.get_triangles().end());
-        // printf("Triangles size = %llu\n", host_triangles.size());
-        // for(int i=0;i<host_nodes.size();i++)
-        // {
-        //     printf("Triangle index begin = %d, end = %d\n", host_nodes[i].it, host_nodes[i].it+host_nodes[i].n);
-        // }
-        cudaMalloc((void**)&triangles, sizeof(DeviceTriangle) * bvh.get_triangles_size());
-        cudaMemcpy(triangles, host_triangles.data(), sizeof(DeviceTriangle) * host_triangles.size(), cudaMemcpyHostToDevice);
+        err = cudaMalloc((void**)&triangles, sizeof(DeviceTriangle) * bvh.get_triangles_size());
+        err = cudaMemcpy(triangles, host_triangles.data(), sizeof(DeviceTriangle) * host_triangles.size(), cudaMemcpyHostToDevice);
+        if (err != cudaSuccess)
+        {
+            printf("CUDA error: %s\n", cudaGetErrorString(err));
+            throw std::runtime_error("DeviceBVH.triangles to cuda.");
+        }
     }
 
     __device__ unsigned int get_root_index()
@@ -83,6 +93,7 @@ struct DeviceBVH
         DeviceBVHNode node = nodes[node_index];
         Eigen::Vector3f OA = node.AA - origin;
         Eigen::Vector3f OB = node.BB - origin;
+        
         Eigen::Vector3f t_min = OA.cwiseProduct(inv_dir);
         Eigen::Vector3f t_max = OB.cwiseProduct(inv_dir);
 
@@ -106,10 +117,9 @@ struct DeviceBVH
         }
         float t_enter = cuda_maxf(cuda_maxf(t_min.x(), t_min.y()), t_min.z());
         float t_exit = cuda_minf(cuda_minf(t_max.x(), t_max.y()), t_max.z());
-        // printf("t_enter=%f, t_exit=%f\n", t_enter, t_exit);
+        
         if(t_enter <= t_exit + EPSILON && t_exit >= 0)
         {
-            // printf("t_enter=%f, t_exit=%f\n", t_enter, t_exit);
             return HitAABBPayload(true, t_enter, t_exit);
         }
         return HitAABBPayload();

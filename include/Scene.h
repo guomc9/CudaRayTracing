@@ -49,6 +49,7 @@ class Scene
 
         void set_BVH(unsigned int thresh_n)
         {
+            printf("triangles size: %llu\n", triangles.size());
             bvh = new BVH(thresh_n, triangles);
         }
 
@@ -57,17 +58,17 @@ class Scene
             delete bvh;
         }
 
-        unsigned int get_height()
+        inline unsigned int get_height() const
         {
             return height;
         }
 
-        unsigned int get_width()
+        inline unsigned int get_width() const
         {
             return width;
         }
 
-        unsigned int get_pixels()
+        inline unsigned int get_pixels() const
         {
             return pixels;
         }
@@ -75,6 +76,18 @@ class Scene
         BVH& get_bvh()
         {
             return *bvh;
+        }
+
+        void set_height(unsigned int _height)
+        {
+            height = _height;
+            pixels = height * width;
+        }
+
+        void set_width(unsigned int _width)
+        {
+            width = _width;
+            pixels = height * width;
         }
 
         std::vector<Object>& get_light_objs()

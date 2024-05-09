@@ -1,120 +1,131 @@
 #ifndef _LOADER_H_
 #define _LOADER_H_
+#define STB_IMAGE_IMPLEMENTATION
+#include "Global.h"
 #include "Eigen/Dense"
-#include "tiny_obj_loader.h"
+#include "OBJLoader.h"
 #include "Triangle.h"
 #include "Material.h"
 #include <vector>
 #include <string>
 #include <iostream>
 
-class OBJLoader
+class Loader
 {
     private:
-        std::vector<Triangle> triangles;
-        std::vector<Triangle> light_triangles;
-        Eigen::Vector3f ka;
-        Eigen::Vector3f kd;
-        Eigen::Vector3f ks;
-        Eigen::Vector3f ke;
-        tinyobj::attrib_t attrib;
-        std::vector<tinyobj::shape_t> shapes;
-        std::vector<tinyobj::material_t> materials;
+        std::vector<Shape> shapes;
+        std::vector<Eigen::Vector3f> vertices;
+        std::vector<Eigen::Vector3f> normals;
+        std::vector<Eigen::Vector2f> textures;
 
     public:
-        OBJLoader()
+        Loader()
         {
-            ka = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            kd = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            ks = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            ke = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            vertices.clear();
+            normals.clear();
+            textures.clear();
             shapes.clear();
-            materials.clear();
         }
 
-        bool read_OBJ(const char* obj_path, const char* mtl_dir)
+        void read_OBJ(const char* obj_path, const char* mtl_dir)
         {
-            std::string err;
-            std::string warn;
-            shapes.clear();
-            materials.clear();
-            bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, obj_path, mtl_dir);
-            if (!err.empty()) {
-                std::cerr << "Error loading OBJ file: " << err << std::endl;
-                return 0;
-            }
-            if (!warn.empty()) {
-                std::cerr << "Warn loading OBJ file: " << warn << std::endl;
-                return 0;
-            }
-            if (!success) {
-                std::cerr << "Failed to load OBJ file: " << obj_path << std::endl;
-                return 0;
-            }
-            return true;
+            OBJLoader obj_loader(obj_path, mtl_dir);
+            obj_loader.parse();
+            shapes = obj_loader.get_shapes();
+            vertices = obj_loader.get_vertices();
+            normals = obj_loader.get_normals();
+            textures = obj_loader.get_textures();
         }
 
-        bool is_empty()
+        void load_object(uint64_t index, std::vector<Triangle>& triangles, std::vector<Triangle>& light_triangles)
         {
-            return shapes.empty();
-        }
-
-        void load_object()
-        {
-            ka = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            kd = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            ks = Eigen::Vector3f(0.1f, 0.1f, 0.1f);
-            ke = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            int height, width, channel;
+            float area_of_obj = 0.0f;
+            uint8_t* kd_tex = nullptr;
+            auto ka = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            auto kd = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            auto ks = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            auto ke = Eigen::Vector3f(0.0f, 0.0f, 0.0f);
+            float ns = 1;
+            std::string map_kd;
             triangles.clear();
             light_triangles.clear();
-            const auto shape = shapes.back();
-            const std::vector<tinyobj::index_t>& indices = shape.mesh.indices;
-            for (size_t i = 0; i < indices.size(); i += 3)
+            const Shape s = shapes[index];
+            
+            if (s._has_map_kd)
             {
-                unsigned int idx1 = indices[i].vertex_index;
-                unsigned int idx2 = indices[i + 1].vertex_index;
-                unsigned int idx3 = indices[i + 2].vertex_index;    
-                float x1 = attrib.vertices[3 * idx1];
-                float y1 = attrib.vertices[3 * idx1 + 1];
-                float z1 = attrib.vertices[3 * idx1 + 2];
-                Eigen::Vector3f v1 = Eigen::Vector3f(x1, y1, z1);
-
-                float x2 = attrib.vertices[3 * idx2];
-                float y2 = attrib.vertices[3 * idx2 + 1];
-                float z2 = attrib.vertices[3 * idx2 + 2];
-                Eigen::Vector3f v2 = Eigen::Vector3f(x2, y2, z2);
-
-                float x3 = attrib.vertices[3 * idx3];
-                float y3 = attrib.vertices[3 * idx3 + 1];
-                float z3 = attrib.vertices[3 * idx3 + 2];
-                Eigen::Vector3f v3 = Eigen::Vector3f(x3, y3, z3);
-                int material_id = shape.mesh.material_ids[i / 3];
-                if (material_id >= 0 && material_id < materials.size())
+                map_kd = s._map_kd;
+                kd_tex = stbi_load(map_kd.c_str(), &height, &width, &channel, 0);        
+            }
+            for (uint64_t i = 0; i < s._vs.size(); i++)
+            {
+                uint64_t idx1 = s._vs[i][0];
+                uint64_t idx2 = s._vs[i][1];
+                uint64_t idx3 = s._vs[i][2];
+                
+                Eigen::Vector3f v1 = vertices[idx1];
+                Eigen::Vector3f v2 = vertices[idx2];
+                Eigen::Vector3f v3 = vertices[idx3];
+                
+                Eigen::Vector3f vn1 = normals[idx1];
+                Eigen::Vector3f vn2 = normals[idx2];
+                Eigen::Vector3f vn3 = normals[idx3];
+                
+                auto normal = ((vn1 + vn2 + vn3) / 3.0f).normalized();
+                kd = Eigen::Vector3f(s._kd[0], s._kd[1], s._kd[2]);
+                ke = Eigen::Vector3f(s._ke[0], s._ke[1], s._ke[2]);
+                ns = s._ns;
+                if (kd_tex != nullptr)
                 {
-                    const tinyobj::material_t& material = materials[material_id];
-                    ka = Eigen::Vector3f(material.ambient);
-                    kd = Eigen::Vector3f(material.diffuse);
-                    ks = Eigen::Vector3f(material.specular);
-                    ke = Eigen::Vector3f(material.emission);
+                    float intpart;
+                    Eigen::Vector2f vt1 = textures[idx1];
+                    Eigen::Vector2f vt2 = textures[idx2];
+                    Eigen::Vector2f vt3 = textures[idx3];
+                    
+                    // std::cout << "vt1: " << vt1 << std::endl;
+                    int u1 = static_cast<int>(std::modff(std::modff(vt1[0], &intpart) + 1, &intpart) * (width-1));
+                    int v1 = static_cast<int>(std::modff(std::modff(vt1[1], &intpart) + 1, &intpart) * (height-1));
+                    int offset = (v1 * width + u1) * channel;
+                    auto kd_1 = Eigen::Vector3f(kd_tex[offset], kd_tex[offset+1], kd_tex[offset+2]) / 255.;
+                    
+                    // std::cout << "vt2: " << vt2 << std::endl;
+                    int u2 = static_cast<int>(std::modff(std::modff(vt2[0], &intpart) + 1, &intpart) * (width-1));
+                    int v2 = static_cast<int>(std::modff(std::modff(vt2[1], &intpart) + 1, &intpart) * (height-1));
+                    offset = (v2 * width + u2) * channel;
+                    auto kd_2 = Eigen::Vector3f(kd_tex[offset], kd_tex[offset+1], kd_tex[offset+2]) / 255.;
+                    
+                    // std::cout << "vt3: " << vt3 << std::endl;
+                    int u3 = static_cast<int>(std::modff(std::modff(vt3[0], &intpart) + 1, &intpart) * (width-1));
+                    int v3 = static_cast<int>(std::modff(std::modff(vt3[1], &intpart) + 1, &intpart) * (height-1));
+                    offset = (v3 * width + u3) * channel;
+                    auto kd_3 = Eigen::Vector3f(kd_tex[offset], kd_tex[offset+1], kd_tex[offset+2]) / 255.;
+                    
+                    kd = (kd_1 + kd_2 + kd_3) / 3;
+                    
                 }
-                Material m(kd, ks, ka, ke);
-                Triangle t(v1, v2, v3, m);
-                if(m.has_emission())
+                
+                Material m(kd, ks, ka, ke, ns, ns > 1 ? SPECULAR : DIFFUSE);
+                if (v1.y() < 0.1f && v2.y() < 0.1f && v3.y() < 0.1f)
+                {
+                    normal = Eigen::Vector3f(0, 1, 0);
+                }
+                Triangle t(v1, v2, v3, normal, m);
+                // if (i == s._vs.size() - 1 && s._vs.size() == 2)
+                // {
+                //     printf("vertex: (%f, %f, %f)\n", v1.x(), v1.y(), v1.z());
+                //     printf("normal: (%f, %f, %f)\n", normal.x(), normal.y(), normal.z());
+                //     printf("kd: (%f, %f, %f)\n", kd.x(), kd.y(), kd.z());
+                // }
+                if (m.has_emission())
                     light_triangles.push_back(t);
                 else
                     triangles.push_back(t);
             }
-            shapes.pop_back();
         }
 
-        std::vector<Triangle>& get_triangles()
+        uint64_t size() const
         {
-            return triangles;
-        }
-
-        std::vector<Triangle>& get_light_triangles()
-        {
-            return light_triangles;
+            return shapes.size();
         }
 
 };

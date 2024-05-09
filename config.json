@@ -1,41 +1,30 @@
 {
     "OBJ_paths": [
         {
-            "OBJ_path": "../../models/CornellBox/floor.obj",
-            "MTL_dir": "../../models/CornellBox/"
-        },
-        {
-            "OBJ_path": "../../models/CornellBox/left.obj",
-            "MTL_dir": "../../models/CornellBox/"
-        },
-        {
-            "OBJ_path": "../../models/CornellBox/right.obj",
-            "MTL_dir": "../../models/CornellBox/"
-        },
-        {
-            "OBJ_path": "../../models/CornellBox/light.obj",
-            "MTL_dir": "../../models/CornellBox/"
-        },
-        {
-            "OBJ_path": "../../models/CornellBox/shortbox.obj",
-            "MTL_dir": "../../models/CornellBox/"
-        },
-        {
-            "OBJ_path": "../../models/CornellBox/tallbox.obj",
-            "MTL_dir": "../../models/CornellBox/"
+            "OBJ_path": "../../scenes/cornell-box/cornell-box.obj",
+            "MTL_dir": "../../scenes/cornell-box/"
         }
     ],
-    "view_z_dir": 1,
+	"lookat": {
+        "x":278.0, 
+        "y":273.0, 
+        "z":-799.0
+    }, 
+	"up": {
+        "x":0.0, 
+        "y":1.0, 
+        "z":0.0
+    }, 
     "eye_pos": {
-        "x": 275.0, 
-        "y": 280.0, 
-        "z":-730.0
+        "x": 278.0, 
+        "y": 273.0, 
+        "z":-800.0
     },
-    "fovY": 45.0,
+    "fov_y": 39.3077, 
     "width": 800,
     "height": 600,
-    "bvh_thresh_n": 8,
+    "bvh_thresh_n": 2,
     "P_RR": 0.6,
-    "spp": 16,
-    "light_sample_n": 4
+    "spp": 2,
+    "light_sample_n": 2
 }

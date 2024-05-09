@@ -41,7 +41,7 @@ include_directories(${CUDA_INCLUDE_DIRS})
 # Link against the curand library
 set_target_properties(CudaRayTracing PROPERTIES CUDA_ARCHITECTURES "86;75;70;61;60")
 target_link_libraries(CudaRayTracing ${CUDA_LIBRARIES} ${GLFW_LIB} ${OPENGL_LIBRARIES})
-target_compile_features(CudaRayTracing PRIVATE cxx_std_14)
+target_compile_features(CudaRayTracing PRIVATE cxx_std_17)
 # if(WIN32)
 #     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"MSVCRT.lib")
 #     target_link_options(CudaRayTracing PRIVATE "/NODEFAULTLIB:LIBCMT")

@@ -1,21 +1,36 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
-#define  _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #include <random>
 #include <curand_kernel.h>
 #include <math.h>
+#include <cstdint>
+#include <stdexcept>
 #include "Eigen/Dense"
 
-#define EPSILON         0.001f
-#define EPSILON_10       0.01f
-#define EPSILON_100       0.1f
-#define EPSILON_1000      1.0f
+#define EPSILON         0.00001f
+#define EPSILON_10       0.0001f
+#define EPSILON_100       0.001f
+#define EPSILON_1000       0.01f
 #define MINF -std::numeric_limits<float>::max()
 #define MAXF std::numeric_limits<float>::max()
-#define BVH_STACK_SIZE      1024
-#define BOUNCE_STACK_SIZE   32
-
+#define BVH_STACK_SIZE      256
+#define BOUNCE_STACK_SIZE   64
+#define MAX_RESOLUTION      4096
+#define DELTA_THETA         30 * M_PI / 180
+#define DELTA_PHI           120 * M_PI / 180
 const Eigen::Vector3f EPSILON_VECTOR3F = Eigen::Vector3f(EPSILON, EPSILON, EPSILON);
+
+template <typename T>
+struct Optional {
+    bool has_val;
+    T val;
+
+    __host__ __device__ Optional() : has_val(false), val(T()) {}
+    __host__ __device__ Optional(const T& v) : has_val(true), val(v) {}
+    __host__ __device__ T value() const { return val; }
+    __host__ __device__ operator bool() const { return has_val; }
+};
 
 __device__ inline Eigen::Vector3f to_world(const Eigen::Vector3f &a, const Eigen::Vector3f &N)
 {
@@ -50,9 +65,42 @@ __device__ inline Eigen::Vector3f get_cuda_random_sphere_vector(const Eigen::Vec
     return to_world(local_vector, N);
 }
 
+__device__ inline Eigen::Vector3f get_cuda_random_specular_sphere_vector(const Eigen::Vector3f& out, const float delta_theta, const float delta_phi, curandState* rand_state)
+{
+    float eta_1 = 2 * get_cuda_random_float(rand_state) - 1;
+    float eta_2 = 2 * get_cuda_random_float(rand_state) - 1;
+
+    float r = out.norm();
+    float theta_0 = std::acos(out.z() / r);
+
+    float phi_0;
+    if (fabs(out.x()) < 1e-5)
+    {
+        phi_0 = out.y() > 0.0f ? static_cast<float>(M_PI_2) : -static_cast<float>(M_PI_2);
+    }
+    else if (out.x() > 1e-5)
+    {
+        phi_0 = std::atan2f(out.y(), out.x());
+    }
+    else
+    {
+        phi_0 = std::atan2f(out.y(), out.x());
+        // phi_0 = out.y() > 0.0f ? std::atan2f(out.y(), out.x()) + static_cast<float>(M_PI_2) : std::atan2f(out.y(), out.x()) - static_cast<float>(M_PI_2);
+    }
+
+    float theta = theta_0 + eta_1 * delta_theta;
+    float phi = phi_0 + eta_2 * delta_phi;
+    return Eigen::Vector3f(std::sin(theta) * std::cos(phi), std::sin(theta) * std::sin(phi), std::cos(theta));
+}
+
 __device__ inline float get_cuda_sphere_sample_inv_pdf()
 {
-    return static_cast<float>(0.5f / M_PI);
+    return static_cast<float>(2.0f * M_PI);
+}
+
+__device__ inline float get_cuda_specular_sphere_sample_inv_pdf(const float delta_theta, const float delta_phi)
+{
+    return (1.0f - std::cos(delta_theta)) * delta_phi;
 }
 
 __device__ inline unsigned int get_cuda_random_uint(curandState* rand_state)

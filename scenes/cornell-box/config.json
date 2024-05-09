@@ -1,0 +1,30 @@
+{
+    "OBJ_paths": [
+        {
+            "OBJ_path": "../../scenes/cornell-box/cornell-box.obj",
+            "MTL_dir": "../../scenes/cornell-box/"
+        }
+    ],
+	"lookat": {
+        "x":278.0, 
+        "y":273.0, 
+        "z":-799.0
+    }, 
+	"up": {
+        "x":0.0, 
+        "y":1.0, 
+        "z":0.0
+    }, 
+    "eye_pos": {
+        "x": 278.0, 
+        "y": 273.0, 
+        "z":-800.0
+    },
+    "fov_y": 39.3077, 
+    "width": 800,
+    "height": 600,
+    "bvh_thresh_n": 2,
+    "P_RR": 0.6,
+    "spp": 2,
+    "light_sample_n": 2
+}
