@@ -12,6 +12,8 @@ $$L_o(p, \omega_o) \approx L_e(p, \omega_o) + L_{direct}(p, \omega_o) + L_{indir
 
 
 $$L_{direct}(p, \omega_o) = \int_\Omega f_r(p, \omega_i, \omega_o) L_i(p, \omega_i) (n \cdot \omega_i) \mathrm{d}\omega_i$$
+
+
 $$L_{direct}(p, \omega_o) =\int_A f_r(p, \omega_i, \omega_o) L_i(p_i, \omega_i)(n \cdot \omega_i)\frac{(n'\cdot \omega_i)}{\Vert x-x'\Vert_2^2}\mathrm{d}A$$
 
 $$L_{direct}(p, \omega_o) \approx \frac{1}{N} \sum_{k=1}^{N} \frac{f_r(p, \omega_{i,k}, \omega_o) L_i(p, \omega_{i,k}) (n \cdot \omega_{i,k})(n_k'\cdot\omega_{i,k})}{p(\omega_{i,k})\Vert x-x_k'\Vert_2^2}$$
