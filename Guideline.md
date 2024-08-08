@@ -35,7 +35,7 @@ Specular material radiance:
 
 $$L_{specular}=\int_\Omega f_r(p, \omega_i, \omega_o) L_i(p, \omega_i) (n \cdot \omega_i) d\omega_i \approx \frac{1}{N} \sum_{k=1}^{N} \frac{f_r(p, \omega_{i,k}, \omega_o) L_i(p, \omega_{i,k}) (n \cdot \omega_{i,k})}{p(\omega_{i,k})}$$
 
-* $`\omega_{i,k}`$ : Incident solid angle from random sphere sampling of $`\{(\theta, \phi)| \theta_0-\frac{\Delta\theta}{2}\le \theta \le \theta_0+\frac{\Delta\theta}{2}, \phi_0-\frac{\Delta\phi}{2}\le \phi \le \phi_0+\frac{\Delta\phi}{2}\}$, $\omega_i=(\theta_0, \phi_0)$, $\Delta\theta\in(0, \pi)$, $\Delta\phi\in(0, \pi)`$
+* $`\omega_{i,k}`$ : Incident solid angle from random sphere sampling of $`\{(\theta, \phi)| \theta_0-\frac{\Delta\theta}{2}\le \theta \le \theta_0+\frac{\Delta\theta}{2}, \phi_0-\frac{\Delta\phi}{2}\le \phi \le \phi_0+\frac{\Delta\phi}{2}\}`$, $`\omega_i=(\theta_0, \phi_0)`$, $`\Delta\theta\in(0, \pi)`$, $`\Delta\phi\in(0, \pi)`$
 * $`p(\omega_{i,k})`$ : $`\frac{1}{S}=\frac{1}{(1-\cos\Delta\theta)\Delta\phi}`$
 
 From Cartesian coordinate system to Sphere coordinate system:
