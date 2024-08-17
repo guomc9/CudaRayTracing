@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(CudaRayTracing CUDA CXX C)
+add_definitions(-w)
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_EXTENSIONS OFF)
+# set(CMAKE_CUDA_STANDARD 17)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
@@ -23,6 +30,13 @@ set ( GLFW_LIB "glfw3" )
 set ( GLAD_INC "${GLAD_HOME}/include" )
 set ( GLAD_SRC "${GLAD_HOME}/src" )
 
+file ( GLOB src_files "src/Render.cu"
+                      "src/GLUtils.cpp"
+                      "src/Command.cu"
+                      "src/Resource.cu"
+                      "src/RenderThread.cu"
+)
+
 file ( GLOB glad_src_files "${GLAD_SRC}/glad.c" )
 file ( GLOB glad_header_files "${GLAD_INC}/glad/glad.h" "${GLAD_INC}/KHR/khrplatform.h" )
 
@@ -34,7 +48,7 @@ file ( GLOB imgui_src_files "${IMGUI_HOME}/imgui.cpp"
                             "${IMGUI_HOME}/backends/imgui_impl_opengl3.cpp"
                             )
 
-add_executable(CudaRayTracing src/main.cu ${glad_header_files} ${glad_src_files} ${imgui_src_files})
+add_executable(CudaRayTracing src/main.cu ${src_files} ${glad_header_files} ${glad_src_files} ${imgui_src_files})
 
 # Include CUDA
 include_directories(${CUDA_INCLUDE_DIRS})
@@ -44,7 +58,7 @@ target_link_libraries(CudaRayTracing ${CUDA_LIBRARIES} ${GLFW_LIB} ${OPENGL_LIBR
 target_compile_features(CudaRayTracing PRIVATE cxx_std_17)
 # if(WIN32)
 #     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"MSVCRT.lib")
-#     target_link_options(CudaRayTracing PRIVATE "/NODEFAULTLIB:LIBCMT")
+#     target_link_options(CudaGSRender PRIVATE "/NODEFAULTLIB:LIBCMT")
 # endif()
 include(CPack)
 

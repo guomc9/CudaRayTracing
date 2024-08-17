@@ -21,6 +21,9 @@
 #define DELTA_PHI           120 * M_PI / 180
 const Eigen::Vector3f EPSILON_VECTOR3F = Eigen::Vector3f(EPSILON, EPSILON, EPSILON);
 
+// Parameter for command queue and result queue size
+const unsigned int QUEUE_SIZE = 10;
+
 template <typename T>
 struct Optional {
     bool has_val;
