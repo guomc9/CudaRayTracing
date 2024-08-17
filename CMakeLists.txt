@@ -58,7 +58,7 @@ target_link_libraries(CudaRayTracing ${CUDA_LIBRARIES} ${GLFW_LIB} ${OPENGL_LIBR
 target_compile_features(CudaRayTracing PRIVATE cxx_std_17)
 # if(WIN32)
 #     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"MSVCRT.lib")
-#     target_link_options(CudaGSRender PRIVATE "/NODEFAULTLIB:LIBCMT")
+#     target_link_options(CudaRayTracing PRIVATE "/NODEFAULTLIB:LIBCMT")
 # endif()
 include(CPack)
 
