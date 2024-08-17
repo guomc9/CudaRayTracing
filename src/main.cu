@@ -5,24 +5,28 @@
 #include "Object.h"
 #include "Scene.h"
 #include <glad/glad.h>
-#include "Render.cuh"
+// #include "Render.cuh"
 #include "Camera.h"
 #include "Eigen/Dense"
 #include "Eigen/Core"
 #include "Gui.h"
+#include "GLUtils.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
 #include <GLFW/glfw3.h>
-#include <chrono>
 #include <thread>
 #include <json.hpp>
 #include <cuda_gl_interop.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include "Command.cuh"
+#include "Resource.cuh"
+#include "RenderThread.cuh"
+#include <mutex>
 
 // ======================================================================================
 // A binary tree contains nodes with degree = 0 or 2, satisfies:
@@ -144,6 +148,7 @@ void render_view()
         }
     }
     printf("here\n");
+
     // configure opengl
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -174,26 +179,7 @@ void render_view()
 
     glViewport(0, 300, 800, 600);
 
-    GLuint pbo;
-    glGenBuffers(1, &pbo);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, task.width * task.height * 3, 0, GL_STREAM_DRAW);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, task.width, task.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
+    GLuint textureID = generateRgbTexture(task.width, task.height);
 
     float vertices[] = {
         // positions        // texture coords
@@ -222,56 +208,17 @@ void render_view()
     // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    const char *vertexShaderSource = R"glsl(
-        #version 330 core
-        layout (location = 0) in vec3 aPos;
-        layout (location = 1) in vec2 aTexCoord;
-
-        out vec2 TexCoord;
-
-        void main()
-        {
-            gl_Position = vec4(aPos, 1.0);
-            TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
-        })glsl";
-
-    const char *fragmentShaderSource = R"glsl(
-        #version 330 core
-        out vec4 FragColor;
-
-        in vec2 TexCoord;
-
-        uniform sampler2D texture1;
-
-        void main()
-        {
-            FragColor = texture(texture1, TexCoord);
-        })glsl";
-
-    GLint vs_id = glCreateShader(GL_VERTEX_SHADER);
-    GLint fs_id = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(vs_id, 1, &vertexShaderSource, nullptr);
-    glShaderSource(fs_id, 1, &fragmentShaderSource, nullptr);
     
-    GLint prog_id = glCreateProgram();
-    
-    glCompileShader(vs_id);
-    glCompileShader(fs_id);
-    
-    glAttachShader(prog_id, vs_id);
-    glAttachShader(prog_id, fs_id);
-    
-    glLinkProgram(prog_id);
-    glValidateProgram(prog_id);
-
-    glDeleteShader(vs_id);
-    glDeleteShader(fs_id);
+    GLint prog_id = configDefaultShader();
 
     glUseProgram(prog_id);
 
-    cudaGraphicsResource* cuda_pbo_resource;
-    cudaGraphicsGLRegisterBuffer(&cuda_pbo_resource, pbo, cudaGraphicsMapFlagsWriteDiscard);
+    AsyncQueueManager queue_manager;
+    ImagePool* img_pool = new ImagePool(task.width, task.height);
+    int cur_img = -1;
+    std::mutex release_req, release_rsp;
+
+    std::thread render_thread(renderFunc, &queue_manager, img_pool, &release_req, &release_rsp);
 
     scene.set_BVH(task.bvh_thresh_n);
     printf("BVH built.\n");
@@ -279,7 +226,7 @@ void render_view()
     bool rendered = false;
     bool clicked = false;
     Gui gui(task.height, task.width, task.eye_pos.data(), task.lookat.data(), task.up.data(), task.P_RR, task.spp, task.light_sample_n);
-    Render render(&scene, gui.get_spp(), gui.get_P_RR(), gui.get_light_sample_n());
+    RTRenderImpl render(&scene, gui.get_spp(), gui.get_P_RR(), gui.get_light_sample_n());
     glUseProgram(prog_id);
 
     while(!glfwWindowShouldClose(window))
@@ -310,18 +257,6 @@ void render_view()
             ImGui::TreePop();
         }
 
-        // if (ImGui::SliderInt("Height", gui.height(), 256, 2560))
-        // {
-        //     std::cout << "Update height: " << gui.get_height() << std::endl;
-        //     render.set_height(static_cast<unsigned int>(gui.get_height()));
-        // }
-
-        // if (ImGui::SliderInt("Width", gui.width(), 256, 2560))
-        // {
-        //     std::cout << "Update width: " << gui.get_width() << std::endl;
-        //     render.set_height(static_cast<unsigned int>(gui.get_width()));
-        // }
-
         if (ImGui::SliderInt("Samples per Pixel (spp)", gui.spp(), 1, 2048))
         {
             std::cout << "Update spp value: " << gui.get_spp() << std::endl;
@@ -342,63 +277,79 @@ void render_view()
 
         if (ImGui::Button("Render"))
         {
-            clicked = true;
+            auto inv_view_mat = get_inverse_view_matrix(gui.get_eye_pos_vec(), gui.get_lookat_vec(), gui.get_up_vec());
+
+            RenderCommand cmd;
+            cmd.render = &render;
+            cmd.eye_pos = gui.get_eye_pos_vec();
+            cmd.inv_view_mat = inv_view_mat;
+            cmd.fovY = fov_y;
+
+            queue_manager.submitRenderCommand(cmd);
+
             rendered = true;
-        }
-        else
-        {
-            clicked = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Save"))
         {
-            namespace fs = std::filesystem;
-            std::string save_path(".tmp/");
-            save_path.append(getCurrentTimeString().append(".png"));
-            fs::path path_to_file(save_path);
-            if (!fs::exists(path_to_file.parent_path()))
-            {
-                fs::create_directories(path_to_file.parent_path());
-            }
-            render.save_frame_buffer(save_path.c_str());
+            // namespace fs = std::filesystem;
+            // std::string save_path(".tmp/");
+            // save_path.append(getCurrentTimeString().append(".png"));
+            // fs::path path_to_file(save_path);
+            // if (!fs::exists(path_to_file.parent_path()))
+            // {
+            //     fs::create_directories(path_to_file.parent_path());
+            // }
+            // render.save_frame_buffer(save_path.c_str());
         }
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        if (clicked)
-        {
-            auto begin = std::chrono::high_resolution_clock::now();
-            auto inv_view_mat = get_inverse_view_matrix(gui.get_eye_pos_vec(), gui.get_lookat_vec(), gui.get_up_vec());
-            render.run_view(gui.get_eye_pos_vec(), inv_view_mat, fov_y, cuda_pbo_resource);
-
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> elapsed = end - begin;
-            std::cout << "render cost: " << elapsed.count() << " seconds" << std::endl;
-        }
         if (rendered)
         {
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, task.width, task.height, GL_RGB, GL_UNSIGNED_BYTE, 0);
-            glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glBindVertexArray(VAO);
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            RenderResult rslt;
+            if (queue_manager.receiveRenderResult(rslt))
+            {
+                cur_img = rslt.img_res;
+                img_pool->get(cur_img)->loadImageFromDevice();
+                std::cout << "render cost: " << rslt.time_cost << " seconds" << std::endl;
+            }
+                
+            if (cur_img >= 0)
+            {
+                glBindTexture(GL_TEXTURE_2D, textureID);
+                glBindBuffer(GL_PIXEL_UNPACK_BUFFER, img_pool->get(cur_img)->getPbo());
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, task.width, task.height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+                glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                glBindVertexArray(VAO);
+                glBindTexture(GL_TEXTURE_2D, textureID);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
         }
         glfwSwapBuffers(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+    printf("try lock release request\n");
+    release_req.lock();
+    if (render_thread.joinable())
+    {
+        printf("try join render thread\n");
+        render_thread.join();
+    }
+    release_rsp.lock();
+    printf("Render thread joined.\n");
+    release_rsp.unlock();
+    release_req.unlock();
+    
     
     render.free();
     scene.free();
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    cudaGraphicsUnregisterResource(cuda_pbo_resource);
-    glDeleteBuffers(1, &pbo);
     glDeleteTextures(1, &textureID);
-
+    delete img_pool;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
